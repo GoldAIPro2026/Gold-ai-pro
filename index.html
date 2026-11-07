@@ -202,7 +202,7 @@ document.getElementById("signal").textContent=filterStatus;
   const previous=m5[m5.length-2];
   const m5Bullish=latest && previous && Number(latest.c)>Number(previous.c);
 const m5Bearish=latest && previous && Number(latest.c)<Number(previous.c);
-  results.dataset.m5Confirmation=
+  const m5Confirmation=
  m5Bullish ? "BULLISH" :
  m5Bearish ? "BEARISH" : "NEUTRAL";
 
@@ -217,7 +217,7 @@ const m5Bearish=latest && previous && Number(latest.c)<Number(previous.c);
    "<p>H1 candles: "+hourly.length+"</p>"+
    "<p>M15 candles: "+m15.length+"</p>"+
    "<p>M5 candles: "+m5.length+"</p>"+
- "<p>M5 confirmation: "+results.dataset.m5Confirmation+"</p>"+
+"<p>M5 confirmation: "+m5Confirmation+"</p>"+
 "<p>Filtered status: "+filterStatus+"</p>";
 
   status.textContent="Multi-timeframe analysis updated";
