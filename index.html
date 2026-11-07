@@ -222,7 +222,7 @@ const m5Bearish=latest && previous && Number(latest.c)<Number(previous.c);
 
   status.textContent="Multi-timeframe analysis updated";
   alertBox.textContent="FILTER: "+filterStatus+" | H4: "+trends.h4+" | H1: "+trends.h1+" | M15: "+trends.m15+" | M5: "+trends.m5;
-  system.textContent="Multi-timeframe data processed. Filter: "+filterStatus;
+  system.textContent="Multi-timeframe data processed. Filter: "+filterStatus+".";
 
  }catch(error){
   status.textContent="Market data unavailable";
