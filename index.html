@@ -80,5 +80,32 @@ generate real trading signals, or send notifications.
 
 <footer>GOLD AI PRO • XAUUSD ONLY • VERSION 1.0</footer>
 </div>
+  <div class="card">
+  <h3>LIVE GOLD PRICE — XAUUSD</h3>
+  <div class="value" id="goldPrice">Loading...</div>
+  <p class="note" id="goldStatus">Connecting to market data...</p>
+</div>
+
+<script>
+async function updateGoldPrice() {
+  const price = document.getElementById("goldPrice");
+  const status = document.getElementById("goldStatus");
+
+  try {
+    const response = await fetch("https://api.gold-api.com/price/XAU");
+    if (!response.ok) throw new Error("API error");
+
+    const data = await response.json();
+    price.textContent = "$" + Number(data.price).toFixed(2);
+    status.textContent = "Last update: " + new Date().toLocaleTimeString();
+  } catch (error) {
+    price.textContent = "--";
+    status.textContent = "Price unavailable. Please retry.";
+  }
+}
+
+updateGoldPrice();
+setInterval(updateGoldPrice, 60000);
+</script>
 </body>
 </html>
