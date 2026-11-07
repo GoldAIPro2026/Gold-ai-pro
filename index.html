@@ -4,161 +4,150 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080d18">
 <title>GOLD AI PRO</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#080d18;color:#f4f6fb;font-family:Arial,sans-serif;padding:20px}
-.container{max-width:850px;margin:auto}
-header{text-align:center;padding:25px 10px}
-h1{color:#e8b94f;letter-spacing:3px;margin:0}
-.subtitle{color:#8994a8;margin-top:10px}
-.card{background:#111b2c;border:1px solid #26364d;border-radius:15px;padding:20px;margin:15px 0}
-.status{color:#f1bd4c;font-weight:bold}
-.signal{font-size:32px;font-weight:bold;text-align:center;color:#f1bd4c;padding:20px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.item{background:#0a1423;padding:15px;border-radius:10px}
-.label{color:#8994a8;font-size:12px}
-.value{font-size:19px;margin-top:8px}
-button{width:100%;padding:15px;background:#e8b94f;color:#111;border:0;border-radius:10px;font-weight:bold;font-size:16px}
-.note{color:#9ba8bb;font-size:13px;line-height:1.6}
-footer{text-align:center;color:#68758a;font-size:12px;padding:20px}
+body{margin:0;padding:18px;background:#080d18;color:#fff;font-family:Arial,sans-serif}
+.container{max-width:650px;margin:auto}
+header{text-align:center;padding:20px 5px}
+h1{color:#36a8ff;letter-spacing:2px}
+.sub{color:#9baac0;font-size:12px}
+.card{background:#111c2d;border:1px solid #263b56;border-radius:14px;padding:17px;margin:13px 0}
+h3{font-size:14px;color:#56b7ff}
+.price{font-size:34px;font-weight:bold;color:#36d9a0}
+.status{color:#aab8ca;font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:#17263a;padding:14px;border-radius:10px;text-align:center}
+.tile small{display:block;color:#9baac0;margin-bottom:8px}
+.value{font-weight:bold;color:#36d9a0}
+.wait{color:#ffcc55;font-size:25px;font-weight:bold}
+.result p{font-size:14px;color:#dce7f5}
+button{width:100%;padding:14px;border:0;border-radius:10px;background:#1689df;color:white;font-size:15px;font-weight:bold}
+footer{text-align:center;color:#71839b;font-size:11px;padding:20px}
 </style>
 </head>
 <body>
 <div class="container">
 <header>
 <h1>GOLD AI PRO</h1>
-<div class="subtitle">XAUUSD • SMART TRADING ASSISTANT</div>
+<div class="sub">XAUUSD • SMART TRADING ASSISTANT</div>
+<div class="sub">MARKET ANALYSIS SYSTEM</div>
 </header>
 
 <div class="card">
-<div class="status">● DEMO MODE — NOT CONNECTED TO LIVE DATA</div>
-<div class="signal" id="signal">WAIT</div>
-<p style="text-align:center;color:#9ba8bb">
-Waiting for verified market data and analysis.
-</p>
+<h3>LIVE GOLD PRICE — XAUUSD</h3>
+<div class="price" id="goldPrice">Loading...</div>
+<p class="status" id="goldStatus">Connecting...</p>
 </div>
 
 <div class="card">
-<h3>Market Analysis</h3>
+<h3>MARKET ANALYSIS</h3>
 <div class="grid">
-<div class="item"><div class="label">H4 TREND</div><div class="value">--</div></div>
-<div class="item"><div class="label">H1 TREND</div><div class="value">--</div></div>
-<div class="item"><div class="label">M15 TREND</div><div class="value">--</div></div>
-<div class="item"><div class="label">M5 TREND</div><div class="value">--</div></div>
+<div class="tile"><small>H4 TREND</small><div class="value">WAIT</div></div>
+<div class="tile"><small>H1 TREND</small><div class="value">WAIT</div></div>
+<div class="tile"><small>M15 TREND</small><div class="value">WAIT</div></div>
+<div class="tile"><small>M5 TREND</small><div class="value" id="m5Trend">WAIT</div></div>
 </div>
 </div>
 
 <div class="card">
-<h3>Trade Setup</h3>
-<div class="grid">
-<div class="item"><div class="label">ENTRY</div><div class="value">--</div></div>
-<div class="item"><div class="label">STOP LOSS</div><div class="value">--</div></div>
-<div class="item"><div class="label">TAKE PROFIT 1</div><div class="value">--</div></div>
-<div class="item"><div class="label">TAKE PROFIT 2</div><div class="value">--</div></div>
-</div>
+<h3>CANDLE ANALYSIS — XAUUSD</h3>
+<p class="status" id="candleStatus">Waiting for data...</p>
+<div class="result" id="candleResults"><p>Analysis not ready.</p></div>
 </div>
 
 <div class="card">
-<h3>Smart Alerts</h3>
-<p>🟡 PRE-ALERT: Waiting for a potential setup.</p>
-<p>🟢 ENTRY ALERT: Only after confirmation.</p>
-<p>🔴 CANCEL ALERT: If the setup becomes invalid.</p>
+<h3>TRADE SETUP</h3>
+<div class="wait" id="signal">WAIT</div>
+<div class="result">
+<p>ENTRY: --</p>
+<p>STOP LOSS: --</p>
+<p>TAKE PROFIT 1: --</p>
+<p>TAKE PROFIT 2: --</p>
+</div>
+<p class="status">No verified setup yet.</p>
 </div>
 
 <div class="card">
-<h3>Trading Controls</h3>
-<button onclick="alert('Live market connection is not configured yet.')">
-CHECK MARKET CONNECTION
-</button>
-<p class="note">
-This is the first interface prototype. It does not yet receive live prices,
-generate real trading signals, or send notifications.
-</p>
+<h3>SMART ALERTS</h3>
+<p class="status" id="alert">Waiting for market confirmation.</p>
 </div>
 
-<footer>GOLD AI PRO • XAUUSD ONLY • VERSION 1.0</footer>
+<div class="card">
+<h3>SYSTEM STATUS</h3>
+<p class="status" id="systemStatus">Starting...</p>
+<button onclick="refreshAll()">REFRESH MARKET DATA</button>
 </div>
-  <div class="card">
-  <h3>LIVE GOLD PRICE — XAUUSD</h3>
-  <div class="value" id="goldPrice">Loading...</div>
-  <p class="note" id="goldStatus">Connecting to market data...</p>
+
+<footer>
+GOLD AI PRO © 2026<br>
+Analysis assistant • Not financial advice
+</footer>
 </div>
 
 <script>
-async function updateGoldPrice() {
-  const price = document.getElementById("goldPrice");
-  const status = document.getElementById("goldStatus");
+const PRICE_API="https://api.gold-api.com/price/XAU";
+const CANDLE_API="https://xaus.com/api/v1/chart?symbol=xau&range=1d&interval=5m";
 
-  try {
-    const response = await fetch("https://api.gold-api.com/price/XAU");
-    if (!response.ok) throw new Error("API error");
-
-    const data = await response.json();
-    price.textContent = "$" + Number(data.price).toFixed(2);
-    status.textContent = "Last update: " + new Date().toLocaleTimeString();
-  } catch (error) {
-    price.textContent = "--";
-    status.textContent = "Price unavailable. Please retry.";
-  }
+async function updateGoldPrice(){
+ const price=document.getElementById("goldPrice");
+ const status=document.getElementById("goldStatus");
+ try{
+  const response=await fetch(PRICE_API);
+  if(!response.ok) throw new Error("Price API error");
+  const data=await response.json();
+  const value=Number(data.price);
+  if(!Number.isFinite(value)) throw new Error("Invalid price");
+  price.textContent="$"+value.toFixed(2);
+  status.textContent="Last update: "+new Date().toLocaleTimeString();
+ }catch(error){
+  price.textContent="--";
+  status.textContent="Price unavailable";
+ }
 }
 
-updateGoldPrice();
-setInterval(updateGoldPrice, 60000);
-</script>
-  
-<div class="card">
-  <h3>GOLD AI PRO — CANDLE ANALYSIS</h3>
-  <div id="candleStatus">Loading market candles...</div>
-  <div id="candleResults"></div>
-</div>
-
-<script>
-const GOLD_API =
-  "https://xaus.com/api/v1/chart?symbol=xau&range=1d&interval=5m";
-
-async function getGoldCandles() {
-  const status = document.getElementById("candleStatus");
-  const results = document.getElementById("candleResults");
-
-  try {
-    const response = await fetch(GOLD_API);
-    if (!response.ok) throw new Error("API error");
-
-    const data = await response.json();
-    const candles = data.points || [];
-
-    if (candles.length < 20) {
-      throw new Error("Not enough candles");
-    }
-
-    const last = candles[candles.length - 1];
-    const previous = candles[candles.length - 2];
-
-    const direction =
-      last.c > previous.c ? "BULLISH" :
-      last.c < previous.c ? "BEARISH" : "NEUTRAL";
-
-    status.textContent =
-      "Market data connected • " + data.interval;
-
-    results.innerHTML = `
-      <p>Latest close: $${last.c.toFixed(2)}</p>
-      <p>Previous close: $${previous.c.toFixed(2)}</p>
-      <p>Short-term direction: ${direction}</p>
-      <p>Candles received: ${candles.length}</p>
-      <p>Signal: WAIT — full analysis not ready</p>
-    `;
-  } catch (error) {
-    status.textContent = "Market data unavailable";
-    results.textContent = error.message;
-  }
+async function getGoldCandles(){
+ const status=document.getElementById("candleStatus");
+ const results=document.getElementById("candleResults");
+ const trend=document.getElementById("m5Trend");
+ const alertBox=document.getElementById("alert");
+ const system=document.getElementById("systemStatus");
+ try{
+  const response=await fetch(CANDLE_API);
+  if(!response.ok) throw new Error("Candle API error");
+  const data=await response.json();
+  const candles=data.points||[];
+  if(candles.length<20) throw new Error("Not enough candles");
+  const last=candles[candles.length-1];
+  const previous=candles[candles.length-2];
+  let direction="NEUTRAL";
+  if(last.c>previous.c) direction="BULLISH";
+  if(last.c<previous.c) direction="BEARISH";
+  trend.textContent=direction;
+  status.textContent="Market data connected • "+data.interval;
+  results.innerHTML=
+   "<p>Latest close: $"+Number(last.c).toFixed(2)+"</p>"+
+   "<p>Previous close: $"+Number(previous.c).toFixed(2)+"</p>"+
+   "<p>Short-term direction: "+direction+"</p>"+
+   "<p>Candles received: "+candles.length+"</p>"+
+   "<p>Trading signal: WAIT</p>";
+  alertBox.textContent="M5 direction: "+direction+". Confirmation required.";
+  system.textContent="Candle data received successfully.";
+ }catch(error){
+  status.textContent="Market data unavailable";
+  results.textContent=error.message;
+  trend.textContent="WAIT";
+  alertBox.textContent="Waiting for verified data.";
+  system.textContent="Connection failed: "+error.message;
+ }
 }
 
-getGoldCandles();
-setInterval(getGoldCandles, 60000);
+function refreshAll(){
+ updateGoldPrice();
+ getGoldCandles();
+}
+refreshAll();
+setInterval(refreshAll,60000);
 </script>
-
 </body>
 </html>
