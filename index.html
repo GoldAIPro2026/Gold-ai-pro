@@ -107,5 +107,58 @@ async function updateGoldPrice() {
 updateGoldPrice();
 setInterval(updateGoldPrice, 60000);
 </script>
+  
+<div class="card">
+  <h3>GOLD AI PRO — CANDLE ANALYSIS</h3>
+  <div id="candleStatus">Loading market candles...</div>
+  <div id="candleResults"></div>
+</div>
+
+<script>
+const GOLD_API =
+  "https://xaus.com/api/v1/chart?symbol=xau&range=1d&interval=5m";
+
+async function getGoldCandles() {
+  const status = document.getElementById("candleStatus");
+  const results = document.getElementById("candleResults");
+
+  try {
+    const response = await fetch(GOLD_API);
+    if (!response.ok) throw new Error("API error");
+
+    const data = await response.json();
+    const candles = data.points || [];
+
+    if (candles.length < 20) {
+      throw new Error("Not enough candles");
+    }
+
+    const last = candles[candles.length - 1];
+    const previous = candles[candles.length - 2];
+
+    const direction =
+      last.c > previous.c ? "BULLISH" :
+      last.c < previous.c ? "BEARISH" : "NEUTRAL";
+
+    status.textContent =
+      "Market data connected • " + data.interval;
+
+    results.innerHTML = `
+      <p>Latest close: $${last.c.toFixed(2)}</p>
+      <p>Previous close: $${previous.c.toFixed(2)}</p>
+      <p>Short-term direction: ${direction}</p>
+      <p>Candles received: ${candles.length}</p>
+      <p>Signal: WAIT — full analysis not ready</p>
+    `;
+  } catch (error) {
+    status.textContent = "Market data unavailable";
+    results.textContent = error.message;
+  }
+}
+
+getGoldCandles();
+setInterval(getGoldCandles, 60000);
+</script>
+
 </body>
 </html>
