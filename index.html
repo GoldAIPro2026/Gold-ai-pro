@@ -176,6 +176,20 @@ async function getGoldCandles(){
    m15:analyzeTrend(m15),
    m5:analyzeTrend(m5)
   };
+  const filterStatus=
+ trends.h4==="BULLISH" &&
+ trends.h1==="BULLISH" &&
+ trends.m15==="BULLISH" &&
+ trends.m5==="BULLISH"
+ ? "BUY WATCH"
+ : trends.h4==="BEARISH" &&
+   trends.h1==="BEARISH" &&
+   trends.m15==="BEARISH" &&
+   trends.m5==="BEARISH"
+   ? "SELL WATCH"
+   : "WAIT";
+
+document.getElementById("signal").textContent=filterStatus;
 
   setTrend("h4Trend",trends.h4);
   setTrend("h1Trend",trends.h1);
@@ -196,15 +210,16 @@ async function getGoldCandles(){
    "<p>H1 candles: "+hourly.length+"</p>"+
    "<p>M15 candles: "+m15.length+"</p>"+
    "<p>M5 candles: "+m5.length+"</p>"+
-   "<p>Trading signal: WAIT</p>";
+  "<p>Filtered status: "+filterStatus+"</p>";
 
   status.textContent="Multi-timeframe analysis updated";
-  alertBox.textContent="H4: "+trends.h4+" | H1: "+trends.h1+" | M15: "+trends.m15+" | M5: "+trends.m5+". Confirmation required.";
-  system.textContent="Multi-timeframe data processed. Signal remains WAIT.";
+  alertBox.textContent="FILTER: "+filterStatus+" | H4: "+trends.h4+" | H1: "+trends.h1+" | M15: "+trends.m15+" | M5: "+trends.m5;
+  system.textContent="Multi-timeframe data processed. Filter: "+filterStatus;
 
  }catch(error){
   status.textContent="Market data unavailable";
   results.textContent=error.message;
+  document.getElementById("signal").textContent="WAIT";
   setTrend("h4Trend","WAIT");
   setTrend("h1Trend","WAIT");
   setTrend("m15Trend","WAIT");
