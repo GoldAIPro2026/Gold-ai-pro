@@ -105,38 +105,110 @@ async function updateGoldPrice(){
   status.textContent="Price unavailable";
  }
 }
-
 async function getGoldCandles(){
  const status=document.getElementById("candleStatus");
  const results=document.getElementById("candleResults");
- const trend=document.getElementById("m5Trend");
  const alertBox=document.getElementById("alert");
  const system=document.getElementById("systemStatus");
- try{
-  const response=await fetch(CANDLE_API);
-  if(!response.ok) throw new Error("Candle API error");
+
+ const setTrend=(id,value)=>{
+  document.getElementById(id).textContent=value;
+ };
+
+ async function getCandles(range,interval){
+  const url=`https://xaus.com/api/v1/chart?symbol=xau&range=${range}&interval=${interval}`;
+  const response=await fetch(url);
+  if(!response.ok) throw new Error(interval+" data error");
   const data=await response.json();
-  const candles=data.points||[];
-  if(candles.length<20) throw new Error("Not enough candles");
-  const last=candles[candles.length-1];
-  const previous=candles[candles.length-2];
-  let direction="NEUTRAL";
-  if(last.c>previous.c) direction="BULLISH";
-  if(last.c<previous.c) direction="BEARISH";
-  trend.textContent=direction;
-  status.textContent="Market data connected • "+data.interval;
+  if(!Array.isArray(data.points)) throw new Error("Invalid candle data");
+  return data.points;
+ }
+
+ function analyzeTrend(candles){
+  if(candles.length<20) return "WAIT";
+  const last20=candles.slice(-20);
+  const average20=last20.reduce((s,c)=>s+Number(c.c),0)/20;
+  const last5=last20.slice(-5);
+  const average5=last5.reduce((s,c)=>s+Number(c.c),0)/5;
+  const last=Number(last20[19].c);
+
+  if(average5>average20 && last>average5) return "BULLISH";
+  if(average5<average20 && last<average5) return "BEARISH";
+  return "NEUTRAL";
+ }
+
+ function makeH4(hourly){
+  const groups={};
+  hourly.forEach(c=>{
+   const bucket=Math.floor(Number(c.t)/14400);
+   if(!groups[bucket]) groups[bucket]=[];
+   groups[bucket].push(c);
+  });
+
+  return Object.values(groups)
+   .map(group=>group.sort((a,b)=>a.t-b.t))
+   .filter(group=>group.length===4)
+   .map(group=>({
+    t:group[0].t,
+    o:Number(group[0].o),
+    h:Math.max(...group.map(c=>Number(c.h))),
+    l:Math.min(...group.map(c=>Number(c.l))),
+    c:Number(group[3].c)
+   }));
+ }
+
+ try{
+  const responses=await Promise.allSettled([
+   getCandles("5d","1h"),
+   getCandles("1d","15m"),
+   getCandles("1d","5m")
+  ]);
+
+  const hourly=responses[0].status==="fulfilled"?responses[0].value:[];
+  const m15=responses[1].status==="fulfilled"?responses[1].value:[];
+  const m5=responses[2].status==="fulfilled"?responses[2].value:[];
+
+  const h4=makeH4(hourly);
+
+  const trends={
+   h4:analyzeTrend(h4),
+   h1:analyzeTrend(hourly),
+   m15:analyzeTrend(m15),
+   m5:analyzeTrend(m5)
+  };
+
+  setTrend("h4Trend",trends.h4);
+  setTrend("h1Trend",trends.h1);
+  setTrend("m15Trend",trends.m15);
+  setTrend("m5Trend",trends.m5);
+
+  const latest=m5[m5.length-1];
+  const previous=m5[m5.length-2];
+
   results.innerHTML=
-   "<p>Latest close: $"+Number(last.c).toFixed(2)+"</p>"+
-   "<p>Previous close: $"+Number(previous.c).toFixed(2)+"</p>"+
-   "<p>Short-term direction: "+direction+"</p>"+
-   "<p>Candles received: "+candles.length+"</p>"+
+   "<p>H4 direction: "+trends.h4+"</p>"+
+   "<p>H1 direction: "+trends.h1+"</p>"+
+   "<p>M15 direction: "+trends.m15+"</p>"+
+   "<p>M5 direction: "+trends.m5+"</p>"+
+   "<p>Latest M5 close: "+(latest?"$"+Number(latest.c).toFixed(2):"--")+"</p>"+
+   "<p>Previous M5 close: "+(previous?"$"+Number(previous.c).toFixed(2):"--")+"</p>"+
+   "<p>H4 candles: "+h4.length+"</p>"+
+   "<p>H1 candles: "+hourly.length+"</p>"+
+   "<p>M15 candles: "+m15.length+"</p>"+
+   "<p>M5 candles: "+m5.length+"</p>"+
    "<p>Trading signal: WAIT</p>";
-  alertBox.textContent="M5 direction: "+direction+". Confirmation required.";
-  system.textContent="Candle data received successfully.";
+
+  status.textContent="Multi-timeframe analysis updated";
+  alertBox.textContent="H4: "+trends.h4+" | H1: "+trends.h1+" | M15: "+trends.m15+" | M5: "+trends.m5+". Confirmation required.";
+  system.textContent="Multi-timeframe data processed. Signal remains WAIT.";
+
  }catch(error){
   status.textContent="Market data unavailable";
   results.textContent=error.message;
-  trend.textContent="WAIT";
+  setTrend("h4Trend","WAIT");
+  setTrend("h1Trend","WAIT");
+  setTrend("m15Trend","WAIT");
+  setTrend("m5Trend","WAIT");
   alertBox.textContent="Waiting for verified data.";
   system.textContent="Connection failed: "+error.message;
  }
@@ -146,6 +218,8 @@ function refreshAll(){
  updateGoldPrice();
  getGoldCandles();
 }
+
+ 
 refreshAll();
 setInterval(refreshAll,60000);
 </script>
