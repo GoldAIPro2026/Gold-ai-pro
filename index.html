@@ -1,37 +1,52 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOLD AI PRO</title>
+<meta name="theme-color" content="#08090d">
+<title>Gold Nordo ai</title>
 <style>
+:root{
+ --bg:#08090d;--panel:#111319;--panel2:#171a22;--line:#3b3020;
+ --gold:#d8ad52;--gold2:#f2d58a;--muted:#9b9ba3;--text:#f5f2e9;
+ --green:#48d6a0;--red:#ff6878;--amber:#e9bd62;
+}
 *{box-sizing:border-box}
-body{margin:0;padding:18px;background:#080d18;color:#fff;font-family:Arial,sans-serif}
+body{margin:0;padding:18px;background:radial-gradient(ellipse at 50% -15%,#342817 0%,#111116 38%,var(--bg) 75%);color:var(--text);font-family:Arial,sans-serif;min-height:100vh}
 .container{max-width:650px;margin:auto}
-header{text-align:center;padding:20px 5px}
-h1{color:#36a8ff;letter-spacing:2px}
-.sub{color:#9baac0;font-size:12px}
-.card{background:#111c2d;border:1px solid #263b56;border-radius:14px;padding:17px;margin:13px 0}
-h3{font-size:14px;color:#56b7ff}
-.price{font-size:34px;font-weight:bold;color:#36d9a0}
-.status{color:#aab8ca;font-size:13px}
+header{text-align:center;padding:20px 5px 24px}
+.logo{width:58px;height:58px;margin:0 auto 12px;border:1px solid #8b6b32;border-radius:18px;display:grid;place-items:center;background:linear-gradient(145deg,#292116,#0e0e11);box-shadow:0 0 28px #c7963025}
+.logo svg{width:34px;height:34px;fill:none;stroke:var(--gold2);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+h1{margin:0;color:var(--gold2);letter-spacing:2.5px;font-size:27px;text-shadow:0 0 18px #d8ad5233}
+.sub{color:var(--muted);font-size:11px;letter-spacing:1.5px;margin-top:7px}
+.sub + .sub{font-size:10px;letter-spacing:2px;color:#777780}
+.card{background:linear-gradient(145deg,#171920,#101116);border:1px solid var(--line);border-radius:16px;padding:18px;margin:13px 0;box-shadow:0 10px 28px #0005}
+h3{font-size:12px;color:var(--gold);letter-spacing:1.6px;margin:0 0 16px}
+.price{font-size:36px;font-weight:700;color:var(--gold2);letter-spacing:.5px}
+.status{color:var(--muted);font-size:12px;line-height:1.55}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tile{background:#17263a;padding:14px;border-radius:10px;text-align:center}
-.tile small{display:block;color:#9baac0;margin-bottom:8px}
-.value{font-weight:bold;color:#36d9a0}
-.wait{color:#ffcc55;font-size:25px;font-weight:bold}
-.result p{font-size:14px;color:#dce7f5}
-button{width:100%;padding:14px;border:0;border-radius:10px;background:#1689df;color:white;font-size:15px;font-weight:bold}
-footer{text-align:center;color:#71839b;font-size:11px;padding:20px}
+.tile{background:linear-gradient(145deg,#20222a,#171920);border:1px solid #33303a;padding:15px 10px;border-radius:12px;text-align:center}
+.tile small{display:block;color:#a5a3a0;margin-bottom:9px;font-size:10px;letter-spacing:1.2px}
+.value{font-weight:bold;color:var(--green);font-size:14px}
+.wait{color:var(--amber);font-size:25px;font-weight:bold;letter-spacing:1px}
+.result p{font-size:13px;color:#e2ded4;line-height:1.45;margin:10px 0}
+button{width:100%;padding:15px;border:1px solid #e4bd69;border-radius:11px;background:linear-gradient(135deg,#e6c16f,#b98732);color:#17120a;font-size:13px;font-weight:800;letter-spacing:1px;box-shadow:0 5px 18px #d8ad5225;cursor:pointer}
+button:active{transform:scale(.99)}
+footer{text-align:center;color:#777780;font-size:10px;line-height:1.8;padding:20px}
+.gold-line{height:1px;background:linear-gradient(90deg,transparent,#a77e38,transparent);margin:14px auto 0;max-width:170px}
+@media(max-width:380px){body{padding:12px}.price{font-size:31px}h1{font-size:24px}}
 </style>
 </head>
 <body>
 <div class="container">
 <header>
-<h1>GOLD AI PRO</h1>
+<div class="logo" aria-hidden="true">
+<svg viewBox="0 0 40 40"><path d="M7 29h26M10 25l3-12 7 7 7-7 3 12H10Z"/><path d="M15 29v3m10-3v3M20 7v5m-2.5-2.5h5"/></svg>
+</div>
+<h1>GOLD NORDO AI</h1>
 <div class="sub">XAUUSD • SMART TRADING ASSISTANT</div>
 <div class="sub">MARKET ANALYSIS SYSTEM</div>
+<div class="gold-line"></div>
 </header>
 
 <div class="card">
@@ -80,7 +95,7 @@ footer{text-align:center;color:#71839b;font-size:11px;padding:20px}
 </div>
 
 <footer>
-GOLD AI PRO © 2026<br>
+GOLD NORDO AI © 2026<br>
 Analysis assistant • Not financial advice
 </footer>
 </div>
@@ -115,7 +130,6 @@ function calculateEMA(candles,period){
  }
  return ema;
 }
-
 
 function calculateRSI(candles,period=14){
  const closes=candles.map(c=>Number(c.c));
@@ -262,9 +276,9 @@ function setTrend(id,value){
  const element=document.getElementById(id);
  element.textContent=value;
  element.style.color=
-  value==="BULLISH"?"#36d9a0":
-  value==="BEARISH"?"#ff6577":
-  value==="NEUTRAL"?"#ffcc55":"#aab8ca";
+  value==="BULLISH"?"#48d6a0":
+  value==="BEARISH"?"#ff6878":
+  value==="NEUTRAL"?"#e9bd62":"#9b9ba3";
 }
 
 function showPriceLevel(id,value){
@@ -410,4 +424,3 @@ setInterval(refreshAll,60000);
 </script>
 </body>
 </html>
-
