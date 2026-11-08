@@ -442,7 +442,7 @@ async function refreshAll(){
   const responses=await Promise.all([
    getCandles("1mo","1h"),
    getCandles("5d","15m"),
-   getCandles("2d","5m")
+   getCandles("1d","5m")
   ]);
 
   const hourly=responses[0];
