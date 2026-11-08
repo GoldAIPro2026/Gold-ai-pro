@@ -214,13 +214,15 @@ function calculateRSI(candles, period=14){
   const groups={};
   hourly.forEach(c=>{
    const bucket=Math.floor(Number(c.t)/14400);
+   
    if(!groups[bucket]) groups[bucket]=[];
    groups[bucket].push(c);
   });
-
+const currentBucket=Math.floor(Date.now()/1000/14400);
   return Object.values(groups)
    .map(group=>group.sort((a,b)=>a.t-b.t))
  .filter(group=>
+  Number(group[0].t)/14400<currentBucket &&
     group.length===4 &&
     group[1].t-group[0].t===3600 &&
     group[2].t-group[1].t===3600 &&
