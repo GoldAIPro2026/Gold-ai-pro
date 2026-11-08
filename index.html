@@ -155,7 +155,7 @@ if(validPoints.length!==data.points.length){
 }
   return [...data.points].sort((a,b)=>Number(a.t)-Number(b.t));
  }
-console.log("CANDLE TIMESTAMPS:", data.points[0].t, data.points[data.points.length-1].t);
+
  function analyzeTrend(candles){
   if(candles.length<20) return "WAIT";
   const last20=candles.slice(-20);
