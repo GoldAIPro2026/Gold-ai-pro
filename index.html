@@ -124,18 +124,36 @@ async function getGoldCandles(){
   throw new Error("Invalid candle data");
 }
 
-const validPoints=data.points.filter(c=>
-  Number.isFinite(Number(c.t)) &&
-  Number.isFinite(Number(c.o)) &&
-  Number.isFinite(Number(c.h)) &&
-  Number.isFinite(Number(c.l)) &&
-  Number.isFinite(Number(c.c))
-);
+const validPoints=data.points.filter(c=>{
+  const t=Number(c.t);
+  const o=Number(c.o);
+  const h=Number(c.h);
+  const l=Number(c.l);
+  const close=Number(c.c);
+
+  return (
+    c.t!==null && c.t!=="" &&
+    c.o!==null && c.o!=="" &&
+    c.h!==null && c.h!=="" &&
+    c.l!==null && c.l!=="" &&
+    c.c!==null && c.c!=="" &&
+    Number.isFinite(t) &&
+    Number.isFinite(o) &&
+    Number.isFinite(h) &&
+    Number.isFinite(l) &&
+    Number.isFinite(close) &&
+    h>=o &&
+    h>=close &&
+    l<=o &&
+    l<=close &&
+    h>=l
+  );
+});
 
 if(validPoints.length!==data.points.length){
   throw new Error("Invalid candle values");
 }
-  return data.points;
+  return [...data.points].sort((a,b)=>Number(a.t)-Number(b.t));
  }
 
  function analyzeTrend(candles){
@@ -232,6 +250,14 @@ const hourly=responses[0].value;
 const m15=responses[1].value;
 const m5=responses[2].value;
   const h4=makeH4(hourly);
+  if(
+  hourly.length<20 ||
+  m15.length<20 ||
+  m5.length<50 ||
+  h4.length<5
+){
+  throw new Error("Insufficient candle data");
+}
 
   const trends={
    h4:analyzeTrend(h4),
@@ -265,6 +291,9 @@ const rsi14=calculateRSI(m5,14);
  trends.m15==="BULLISH" &&
  trends.m5==="BULLISH" &&
  m5Bullish &&
+   Number.isFinite(ema20) &&
+Number.isFinite(ema50) &&
+Number.isFinite(rsi14) &&
  ema20!==null &&
  ema50!==null &&
  rsi14!==null &&
@@ -276,6 +305,9 @@ const rsi14=calculateRSI(m5,14);
    trends.m15==="BEARISH" &&
    trends.m5==="BEARISH" &&
    m5Bearish &&
+   Number.isFinite(ema20) &&
+Number.isFinite(ema50) &&
+Number.isFinite(rsi14) &&
    ema20!==null &&
    ema50!==null &&
    rsi14!==null &&
