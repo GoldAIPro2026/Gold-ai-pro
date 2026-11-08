@@ -53,6 +53,18 @@ button:active{transform:scale(.99)}
 footer{text-align:center;color:#777780;font-size:10px;line-height:1.8;padding:20px}
 .gold-line{height:1px;background:linear-gradient(90deg,transparent,#a77e38,transparent);margin:14px auto 0;max-width:170px}
 @media(max-width:380px){body{padding:12px}.price{font-size:31px}h1{font-size:24px}}
+ .entry-price{
+ color:#ffe08a;
+ font-size:20px;
+ font-weight:bold;
+ text-shadow:0 0 10px #ffe08a55;
+}
+.stop-price{
+ color:#ff5364;
+ font-size:20px;
+ font-weight:bold;
+ text-shadow:0 0 10px #ff536455;
+}
 </style>
 </head>
 <body>
@@ -93,10 +105,22 @@ footer{text-align:center;color:#777780;font-size:10px;line-height:1.8;padding:20
 <h3>TRADE SETUP</h3>
 <div class="wait" id="signal">WAIT</div>
 <div class="result">
-<p>ENTRY: <span id="entry">--</span></p>
-<p>STOP LOSS: <span id="stopLoss">--</span></p>
-<p>TAKE PROFIT 1: <span id="takeProfit1">--</span></p>
-<p>TAKE PROFIT 2: <span id="takeProfit2">--</span></p>
+<p>ENTRY: <span id="entry" class="entry-price">--</span></p>
+<p>STOP LOSS: <span id="stopLoss" class="stop-price">--</span></p>
+
+.tp1{
+ color:#35d9e8;
+ font-weight:bold;
+ font-size:20px;
+ text-shadow:0 0 10px #35d9e855;
+}
+.tp2{
+ color:#b58aff;
+ font-weight:bold;
+ font-size:20px;
+ text-shadow:0 0 10px #b58aff55;
+}
+
 </div>
 <p class="status">Experimental analysis. Not an automatic trading system.</p>
 </div>
