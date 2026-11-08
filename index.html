@@ -4,410 +4,382 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOLD AI PRO</title>
+<meta name="theme-color" content="#080d18">
+<title>SIMO GOLD AI</title>
 <style>
+:root{--bg:#080d18;--panel:#111b2b;--line:#23344c;--blue:#38a5ff;--text:#eaf2ff;--muted:#8da2bd;--green:#18d69a;--red:#ff6378;--gold:#f5c45b}
 *{box-sizing:border-box}
-body{margin:0;padding:18px;background:#080d18;color:#fff;font-family:Arial,sans-serif}
-.container{max-width:650px;margin:auto}
-header{text-align:center;padding:20px 5px}
-h1{color:#36a8ff;letter-spacing:2px}
-.sub{color:#9baac0;font-size:12px}
-.card{background:#111c2d;border:1px solid #263b56;border-radius:14px;padding:17px;margin:13px 0}
-h3{font-size:14px;color:#56b7ff}
-.price{font-size:34px;font-weight:bold;color:#36d9a0}
-.status{color:#aab8ca;font-size:13px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tile{background:#17263a;padding:14px;border-radius:10px;text-align:center}
-.tile small{display:block;color:#9baac0;margin-bottom:8px}
-.value{font-weight:bold;color:#36d9a0}
-.wait{color:#ffcc55;font-size:25px;font-weight:bold}
-.result p{font-size:14px;color:#dce7f5}
-button{width:100%;padding:14px;border:0;border-radius:10px;background:#1689df;color:white;font-size:15px;font-weight:bold}
-footer{text-align:center;color:#71839b;font-size:11px;padding:20px}
+body{margin:0;background:linear-gradient(160deg,#0b1424,#060a12);color:var(--text);font-family:Arial,sans-serif;padding:18px;max-width:900px;margin:auto}
+header{text-align:center;padding:18px 5px 22px}
+.logo{font-size:29px;font-weight:900;letter-spacing:2px;color:#fff}
+.logo span{color:var(--blue)}
+.sub{font-size:11px;letter-spacing:2px;color:var(--muted);margin-top:8px}
+.panel{background:linear-gradient(145deg,#142238,#0e1726);border:1px solid var(--line);border-radius:15px;padding:17px;margin:12px 0;box-shadow:0 8px 25px #0003}
+.section{font-size:12px;letter-spacing:1.5px;color:var(--blue);font-weight:bold;margin-bottom:15px}
+.price{font-size:36px;font-weight:800;color:var(--gold);margin:5px 0}
+.small{font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.metric{background:#0a1321;border:1px solid #1d3048;border-radius:10px;padding:13px;min-width:0}
+.metric b{display:block;font-size:17px;margin-top:7px;overflow-wrap:anywhere}
+.metric label{font-size:10px;color:var(--muted);letter-spacing:1px}
+.status{font-weight:bold;color:var(--gold)}
+.green{color:var(--green)!important}.red{color:var(--red)!important}.blue{color:var(--blue)!important}
+.tf{display:flex;justify-content:space-between;padding:12px 4px;border-bottom:1px solid #23344c;font-size:13px}
+.tf:last-child{border:0}
+.signal{font-size:28px;font-weight:900;text-align:center;padding:12px}
+.levels{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.level{background:#0a1321;border-radius:9px;padding:12px}
+.level span{display:block;color:var(--muted);font-size:10px;margin-bottom:7px}
+.level b{font-size:16px}
+button{background:#1689e8;color:white;border:0;border-radius:9px;padding:13px 20px;font-weight:bold;width:100%;font-size:14px;margin-top:10px}
+button:active{opacity:.7}
+.note{font-size:12px;color:var(--muted);line-height:1.6}
+.bar{height:7px;background:#26364b;border-radius:8px;overflow:hidden;margin-top:9px}
+.bar div{height:100%;background:var(--blue);width:0}
+footer{text-align:center;color:#62758e;font-size:10px;padding:22px}
+@media(min-width:650px){.grid{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
-<div class="container">
 <header>
-<h1>GOLD AI PRO</h1>
-<div class="sub">XAUUSD • SMART TRADING ASSISTANT</div>
-<div class="sub">MARKET ANALYSIS SYSTEM</div>
+ <div class="logo">SIMO <span>GOLD AI</span></div>
+ <div class="sub">XAUUSD • SMART TRADING ASSISTANT</div>
+ <div class="sub">MULTI-TIMEFRAME MARKET ANALYSIS</div>
 </header>
 
-<div class="card">
-<h3>LIVE GOLD PRICE — XAUUSD</h3>
-<div class="price" id="goldPrice">Loading...</div>
-<p class="status" id="goldStatus">Connecting...</p>
+<div class="panel">
+ <div class="section">LIVE GOLD PRICE — XAUUSD</div>
+ <div class="price" id="price">Loading...</div>
+ <div class="small" id="priceTime">Connecting to market data...</div>
+ <div class="small" id="priceState">Checking data source...</div>
 </div>
 
-<div class="card">
-<h3>MARKET ANALYSIS</h3>
-<div class="grid">
-<div class="tile"><small>H4 TREND</small><div class="value" id="h4Trend">WAIT</div></div>
-<div class="tile"><small>H1 TREND</small><div class="value" id="h1Trend">WAIT</div></div>
-<div class="tile"><small>M15 TREND</small><div class="value" id="m15Trend">WAIT</div></div>
-<div class="tile"><small>M5 TREND</small><div class="value" id="m5Trend">WAIT</div></div>
-</div>
-</div>
-
-<div class="card">
-<h3>CANDLE ANALYSIS — XAUUSD</h3>
-<p class="status" id="candleStatus">Waiting for data...</p>
-<div class="result" id="candleResults"><p>Analysis not ready.</p></div>
+<div class="panel">
+ <div class="section">MARKET ANALYSIS</div>
+ <div id="trends">
+  <div class="tf">H4 TREND <b>WAIT</b></div>
+  <div class="tf">H1 TREND <b>WAIT</b></div>
+  <div class="tf">M15 TREND <b>WAIT</b></div>
+  <div class="tf">M5 TREND <b>WAIT</b></div>
+ </div>
 </div>
 
-<div class="card">
-<h3>TRADE SETUP</h3>
-<div class="wait" id="signal">WAIT</div>
-<div class="result">
-<p>ENTRY: <span id="entry">--</span></p>
-<p>STOP LOSS: <span id="stopLoss">--</span></p>
-<p>TAKE PROFIT 1: <span id="takeProfit1">--</span></p>
-<p>TAKE PROFIT 2: <span id="takeProfit2">--</span></p>
-</div>
-<p class="status">Experimental analysis. Not an automatic trading system.</p>
-</div>
-
-<div class="card">
-<h3>SMART ALERTS</h3>
-<p class="status" id="alert">Waiting for market confirmation.</p>
+<div class="panel">
+ <div class="section">TRADE SETUP</div>
+ <div class="signal status" id="signal">WAIT</div>
+ <div class="levels">
+  <div class="level"><span>ENTRY</span><b id="entry">--</b></div>
+  <div class="level"><span>STOP LOSS</span><b id="sl">--</b></div>
+  <div class="level"><span>TAKE PROFIT 1</span><b id="tp1">--</b></div>
+  <div class="level"><span>TAKE PROFIT 2</span><b id="tp2">--</b></div>
+  <div class="level"><span>TAKE PROFIT 3</span><b id="tp3">--</b></div>
+  <div class="level"><span>RISK / REWARD</span><b id="rr">--</b></div>
+ </div>
+ <p class="note" id="reason">Waiting for valid market data.</p>
 </div>
 
-<div class="card">
-<h3>SYSTEM STATUS</h3>
-<p class="status" id="systemStatus">Starting...</p>
-<button onclick="refreshAll()">REFRESH MARKET DATA</button>
+<div class="panel">
+ <div class="section">TECHNICAL INDICATORS — M15</div>
+ <div class="grid">
+  <div class="metric"><label>RSI 14</label><b id="rsi">--</b></div>
+  <div class="metric"><label>EMA 20</label><b id="ema20">--</b></div>
+  <div class="metric"><label>EMA 50</label><b id="ema50">--</b></div>
+  <div class="metric"><label>EMA 200</label><b id="ema200">--</b></div>
+  <div class="metric"><label>MACD</label><b id="macd">--</b></div>
+  <div class="metric"><label>ATR 14</label><b id="atr">--</b></div>
+  <div class="metric"><label>BOLLINGER HIGH</label><b id="bbHigh">--</b></div>
+  <div class="metric"><label>BOLLINGER LOW</label><b id="bbLow">--</b></div>
+ </div>
 </div>
 
-<footer>
-GOLD AI PRO © 2026<br>
-Analysis assistant • Not financial advice
-</footer>
+<div class="panel">
+ <div class="section">FIBONACCI RETRACEMENT — H1</div>
+ <div class="grid">
+  <div class="metric"><label>23.6%</label><b id="fib236">--</b></div>
+  <div class="metric"><label>38.2%</label><b id="fib382">--</b></div>
+  <div class="metric"><label>50.0%</label><b id="fib500">--</b></div>
+  <div class="metric"><label>61.8%</label><b id="fib618">--</b></div>
+  <div class="metric"><label>78.6%</label><b id="fib786">--</b></div>
+ </div>
 </div>
+
+<div class="panel">
+ <div class="section">SUPPORT & RESISTANCE</div>
+ <div class="grid">
+  <div class="metric"><label>SUPPORT</label><b id="support">--</b></div>
+  <div class="metric"><label>RESISTANCE</label><b id="resistance">--</b></div>
+  <div class="metric"><label>CANDLE PATTERN</label><b id="candle">--</b></div>
+  <div class="metric"><label>MARKET VOLATILITY</label><b id="volatility">--</b></div>
+ </div>
+</div>
+
+<div class="panel">
+ <div class="section">SMART ALERTS</div>
+ <div id="alerts" class="note">Waiting for analysis...</div>
+ <button onclick="refreshAll()">REFRESH MARKET ANALYSIS</button>
+ <div class="small" style="margin-top:12px" id="lastUpdate">Last update: --</div>
+</div>
+
+<div class="panel">
+ <div class="section">SYSTEM STATUS</div>
+ <div id="system" class="status">Connecting...</div>
+ <p class="note">Data provider: XAUS API. Spot prices are indicative reference prices, not broker execution quotes. News events are not automatically verified by this version.</p>
+</div>
+
+<footer>SIMO GOLD AI • XAUUSD ANALYSIS TOOL • NOT FINANCIAL ADVICE</footer>
 
 <script>
-const PRICE_API="https://api.gold-api.com/price/XAU";
+const API="https://xaus.com/api/v1";
+const $=id=>document.getElementById(id);
+let market={};
+let busy=false;
 
-async function updateGoldPrice(){
- const price=document.getElementById("goldPrice");
- const status=document.getElementById("goldStatus");
+function fmt(n){
+ return Number.isFinite(n)?n.toFixed(2):"--";
+}
+function setText(id,value){$(id).textContent=value;}
+
+async function getJSON(url){
+ const controller=new AbortController();
+ const timer=setTimeout(()=>controller.abort(),15000);
  try{
-  const response=await fetch(PRICE_API);
-  if(!response.ok) throw new Error("Price API error");
-  const data=await response.json();
-  const value=Number(data.price);
-  if(!Number.isFinite(value)) throw new Error("Invalid price");
-  price.textContent="$"+value.toFixed(2);
-  status.textContent="Last update: "+new Date().toLocaleTimeString();
- }catch(error){
-  price.textContent="--";
-  status.textContent="Price unavailable";
+  const r=await fetch(url,{cache:"no-store",signal:controller.signal});
+  if(!r.ok)throw new Error("HTTP "+r.status);
+  return await r.json();
+ }finally{clearTimeout(timer);}
+}
+function normalizeCandles(data){
+ const arr=data.points||data.candles||data.data||[];
+ return arr.map(x=>{
+  let t=Number(x.t??x.time??x.timestamp);
+  if(t<1e12)t*=1000;
+  return {t,o:Number(x.o??x.open),h:Number(x.h??x.high),
+   l:Number(x.l??x.low),c:Number(x.c??x.close)};
+ }).filter(x=>Number.isFinite(x.t)&&Number.isFinite(x.o)&&
+  Number.isFinite(x.h)&&Number.isFinite(x.l)&&Number.isFinite(x.c))
+ .sort((a,b)=>a.t-b.t);
+}
+function ema(values,period){
+ if(values.length<period)return [];
+ const k=2/(period+1);
+ let prev=values.slice(0,period).reduce((a,b)=>a+b,0)/period;
+ const out=Array(period-1).fill(null);
+ out.push(prev);
+ for(let i=period;i<values.length;i++){
+  prev=values[i]*k+prev*(1-k);
+  out.push(prev);
  }
+ return out;
 }
-
-function calculateEMA(candles,period){
- const closes=candles.map(c=>Number(c.c));
- if(closes.length<period) return null;
- const multiplier=2/(period+1);
- let ema=closes.slice(0,period).reduce((s,v)=>s+v,0)/period;
- for(let i=period;i<closes.length;i++){
-  ema=(closes[i]-ema)*multiplier+ema;
+function rsi(values,p=14){
+ if(values.length<=p)return null;
+ let gain=0,loss=0;
+ for(let i=1;i<=p;i++){
+  const d=values[i]-values[i-1];
+  if(d>0)gain+=d;else loss-=d;
  }
- return ema;
-}
-
-
-function calculateRSI(candles,period=14){
- const closes=candles.map(c=>Number(c.c));
- if(closes.length<period+1) return null;
- let gains=0,losses=0;
- for(let i=1;i<=period;i++){
-  const change=closes[i]-closes[i-1];
-  if(change>0) gains+=change;
-  else losses-=change;
+ let ag=gain/p,al=loss/p;
+ for(let i=p+1;i<values.length;i++){
+  const d=values[i]-values[i-1];
+  ag=(ag*(p-1)+Math.max(d,0))/p;
+  al=(al*(p-1)+Math.max(-d,0))/p;
  }
- let avgGain=gains/period;
- let avgLoss=losses/period;
- for(let i=period+1;i<closes.length;i++){
-  const change=closes[i]-closes[i-1];
-  avgGain=(avgGain*(period-1)+Math.max(change,0))/period;
-  avgLoss=(avgLoss*(period-1)+Math.max(-change,0))/period;
+ return al===0?100:100-100/(1+ag/al);
+}
+function atr(data,p=14){
+ if(data.length<=p)return null;
+ const tr=[];
+ for(let i=1;i<data.length;i++){
+  const x=data[i],prev=data[i-1];
+  tr.push(Math.max(x.h-x.l,Math.abs(x.h-prev.c),Math.abs(x.l-prev.c)));
  }
- if(avgLoss===0) return avgGain===0?50:100;
- return 100-(100/(1+avgGain/avgLoss));
+ return tr.slice(-p).reduce((a,b)=>a+b,0)/p;
 }
-
-function calculateATR(candles,period=14){
- if(candles.length<period+1) return null;
- const trs=[];
- for(let i=1;i<candles.length;i++){
-  const high=Number(candles[i].h);
-  const low=Number(candles[i].l);
-  const previousClose=Number(candles[i-1].c);
-  trs.push(Math.max(
-   high-low,
-   Math.abs(high-previousClose),
-   Math.abs(low-previousClose)
-  ));
+function macd(values){
+ const a=ema(values,12),b=ema(values,26);
+ if(!a.length||!b.length)return null;
+ const line=values.map((_,i)=>a[i]!=null&&b[i]!=null?a[i]-b[i]:null);
+ const valid=line.filter(x=>x!=null);
+ const sig=ema(valid,9);
+ if(!sig.length)return null;
+ return {line:valid.at(-1),signal:sig.at(-1)};
+}
+function bollinger(values,p=20){
+ if(values.length<p)return null;
+ const a=values.slice(-p);
+ const mean=a.reduce((x,y)=>x+y,0)/p;
+ const sd=Math.sqrt(a.reduce((s,x)=>s+(x-mean)**2,0)/p);
+ return {high:mean+2*sd,low:mean-2*sd};
+}
+function trend(data){
+ if(data.length<55)return "WAIT";
+ const c=data.map(x=>x.c);
+ const e20=ema(c,20),e50=ema(c,50);
+ const last=c.at(-1),a=e20.at(-1),b=e50.at(-1);
+ if(last>a&&a>b)return "BUY";
+ if(last<a&&a<b)return "SELL";
+ return "WAIT";
+}
+function aggregate(data,size){
+ const out=[];
+ for(let i=0;i+size<=data.length;i+=size){
+  const a=data.slice(i,i+size);
+  out.push({t:a[0].t,o:a[0].o,h:Math.max(...a.map(x=>x.h)),
+   l:Math.min(...a.map(x=>x.l)),c:a.at(-1).c});
  }
- let atr=trs.slice(0,period).reduce((s,v)=>s+v,0)/period;
- for(let i=period;i<trs.length;i++){
-  atr=(atr*(period-1)+trs[i])/period;
+ return out;
+}
+function candlePattern(d){
+ if(d.length<2)return "Unavailable";
+ const a=d.at(-1),b=d.at(-2);
+ const body=Math.abs(a.c-a.o),range=a.h-a.l;
+ if(range===0)return "Neutral";
+ const lower=Math.min(a.o,a.c)-a.l;
+ const upper=a.h-Math.max(a.o,a.c);
+ if(body/range<.12)return "Doji";
+ if(lower>body*2&&upper<body)return a.c>=a.o?"Hammer":"Possible hammer";
+ if(upper>body*2&&lower<body)return "Shooting star";
+ if(a.c>a.o&&b.c<b.o&&a.c>b.o&&a.o<b.c)return "Bullish engulfing";
+ if(a.c<a.o&&b.c>b.o&&a.o>b.c&&a.c<b.o)return "Bearish engulfing";
+ return a.c>a.o?"Bullish candle":a.c<a.o?"Bearish candle":"Neutral";
+}
+function fibs(data){
+ const a=data.slice(-100);
+ const hi=Math.max(...a.map(x=>x.h)),lo=Math.min(...a.map(x=>x.l));
+ const range=hi-lo;
+ return {236:hi-range*.236,382:hi-range*.382,500:hi-range*.5,
+ 618:hi-range*.618,786:hi-range*.786,hi,lo};
+}
+function setTrend(id,v){
+ const el=$(id);
+ el.textContent=v;
+ el.className=v==="BUY"?"green":v==="SELL"?"red":"status";
+}
+function clearTrade(reason){
+ setText("signal","WAIT");
+ $("signal").className="signal status";
+ ["entry","sl","tp1","tp2","tp3","rr"].forEach(x=>setText(x,"--"));
+ setText("reason",reason);
+}
+function updateTrade(d,trend15,trend5,trend1,trend4,ind,priceFresh){
+ const c=d.at(-1).c;
+ if(!priceFresh||!ind.atr||!ind.rsi||!ind.macd||
+    trend15==="WAIT"||trend5!==trend15||
+    trend1!==trend15||trend4!==trend15){
+  clearTrade("No confirmed setup. Timeframes are not aligned or data is incomplete.");
+  return;
  }
- return atr;
-}
-
-function analyzeTrend(candles){
- if(candles.length<20) return "WAIT";
- const last20=candles.slice(-20);
- const average20=last20.reduce((s,c)=>s+Number(c.c),0)/20;
- const average5=last20.slice(-5).reduce((s,c)=>s+Number(c.c),0)/5;
- const last=Number(last20[19].c);
- if(average5>average20 && last>average5) return "BULLISH";
- if(average5<average20 && last<average5) return "BEARISH";
- return "NEUTRAL";
-}
-
-function makeH4(hourly){
- const groups={};
- hourly.forEach(c=>{
-  const bucket=Math.floor(Number(c.t)/14400);
-  if(!groups[bucket]) groups[bucket]=[];
-  groups[bucket].push(c);
- });
- const currentBucket=Math.floor(Date.now()/1000/14400);
- return Object.values(groups)
-  .map(g=>g.sort((a,b)=>Number(a.t)-Number(b.t)))
-  .filter(g=>
-   Number(g[0].t)/14400<currentBucket &&
-   g.length===4 &&
-   Number(g[1].t)-Number(g[0].t)===3600 &&
-   Number(g[2].t)-Number(g[1].t)===3600 &&
-   Number(g[3].t)-Number(g[2].t)===3600
-  )
-  .map(g=>({
-   t:Number(g[0].t),
-   o:Number(g[0].o),
-   h:Math.max(...g.map(c=>Number(c.h))),
-   l:Math.min(...g.map(c=>Number(c.l))),
-   c:Number(g[3].c)
-  }));
-}
-
-async function getCandles(range,interval){
- const url=
-  "https://xaus.com/api/v1/chart?symbol=xau&range="+
-  range+"&interval="+interval;
-
- const response=await fetch(url);
- if(!response.ok) throw new Error("Candle API error: "+interval);
-
- const data=await response.json();
-
- if(data.interval && data.interval!==interval){
-  throw new Error("Wrong interval returned: "+interval);
+ const buy=trend15==="BUY";
+ const momentum=buy?
+  ind.rsi>=50&&ind.rsi<72&&ind.macd.line>ind.macd.signal:
+  ind.rsi<=50&&ind.rsi>28&&ind.macd.line<ind.macd.signal;
+ if(!momentum){
+  clearTrade("Momentum confirmation is missing. Waiting for a better setup.");
+  return;
  }
-
- if(!Array.isArray(data.points)){
-  throw new Error("Invalid candle data: "+interval);
- }
-
- const validPoints=data.points.filter(c=>{
-  const t=Number(c.t);
-  const o=Number(c.o);
-  const h=Number(c.h);
-  const l=Number(c.l);
-  const close=Number(c.c);
-
-  return (
-   c.t!==null && c.t!=="" &&
-   c.o!==null && c.o!=="" &&
-   c.h!==null && c.h!=="" &&
-   c.l!==null && c.l!=="" &&
-   c.c!==null && c.c!=="" &&
-   Number.isFinite(t) &&
-   Number.isFinite(o) &&
-   Number.isFinite(h) &&
-   Number.isFinite(l) &&
-   Number.isFinite(close) &&
-   h>=Math.max(o,close,l) &&
-   l<=Math.min(o,close,h) &&
-   t>0
-  );
- }).map(c=>({
-  t:Number(c.t),
-  o:Number(c.o),
-  h:Number(c.h),
-  l:Number(c.l),
-  c:Number(c.c)
- })).sort((a,b)=>a.t-b.t);
-
- if(validPoints.length<20){
-  throw new Error("Not enough candles: "+interval);
- }
-
- return validPoints;
+ const risk=ind.atr*1.5;
+ const entry=c,stop=buy?c-risk:c+risk;
+ const sign=buy?1:-1;
+ setText("signal",buy?"BUY":"SELL");
+ $("signal").className="signal "+(buy?"green":"red");
+ setText("entry",fmt(entry));
+ setText("sl",fmt(stop));
+ setText("tp1",fmt(entry+sign*risk));
+ setText("tp2",fmt(entry+sign*risk*2));
+ setText("tp3",fmt(entry+sign*risk*3));
+ setText("rr","1:3");
+ setText("reason","Trend alignment and momentum conditions detected. Confirm the setup on your broker chart before considering any trade.");
 }
-
-function resetSetup(message){
- document.getElementById("signal").textContent="WAIT";
- document.getElementById("entry").textContent="--";
- document.getElementById("stopLoss").textContent="--";
- document.getElementById("takeProfit1").textContent="--";
- document.getElementById("takeProfit2").textContent="--";
- document.getElementById("alert").textContent=message;
-}
-
-function setTrend(id,value){
- const element=document.getElementById(id);
- element.textContent=value;
- element.style.color=
-  value==="BULLISH"?"#36d9a0":
-  value==="BEARISH"?"#ff6577":
-  value==="NEUTRAL"?"#ffcc55":"#aab8ca";
-}
-
-function showPriceLevel(id,value){
- document.getElementById(id).textContent=
-  Number.isFinite(value)?value.toFixed(2):"--";
-}
-
 async function refreshAll(){
- const system=document.getElementById("systemStatus");
- const candleStatus=document.getElementById("candleStatus");
-
- system.textContent="Loading market data...";
- candleStatus.textContent="Fetching candles...";
- resetSetup("Waiting for market confirmation.");
-
+ if(busy)return;
+ busy=true;
+ setText("system","Fetching market data...");
+ setText("alerts","Updating candles and indicators...");
  try{
-  await updateGoldPrice();
-
-  const responses=await Promise.all([
-   getCandles("10d","1h"),
-   getCandles("1d","15m"),
-   getCandles("1d","5m")
+  const [spot,h1,m15,m5]=await Promise.all([
+   getJSON(API+"/spot?compact=1"),
+   getJSON(API+"/chart?symbol=xau&range=3mo&interval=1h"),
+   getJSON(API+"/chart?symbol=xau&range=5d&interval=15m"),
+   getJSON(API+"/chart?symbol=xau&range=5d&interval=5m")
   ]);
+  const price=Number(spot.spot_usd_oz);
+  const spotDate=Date.parse(spot.updated_at||spot.price_as_of||"");
+  const spotAge=(Date.now()-spotDate)/1000;
+  const priceFresh=Number.isFinite(price)&&price>0&&
+   Number.isFinite(spotAge)&&spotAge>=-60&&spotAge<=300&&
+   spot.data_state?.status==="fresh"&&!spot.stale;
+  if(Number.isFinite(price)&&price>0)setText("price","$"+fmt(price));
+  setText("priceTime","Last update: "+(spot.updated_at||"Unknown"));
+  setText("priceState",priceFresh?"Price feed fresh":"Price feed stale or unverified");
 
-  const hourly=responses[0];
-  const m15=responses[1];
-  const m5=responses[2];
-  const h4=makeH4(hourly);
+  const H1=normalizeCandles(h1),M15=normalizeCandles(m15),M5=normalizeCandles(m5);
+  if(H1.length<210||M15.length<210||M5.length<210)
+   throw new Error("Not enough candles for reliable indicator calculation.");
 
-  if(h4.length<50 || hourly.length<50 ||
-     m15.length<50 || m5.length<50){
-   throw new Error("Not enough candle history");
-  }
+  const age5=(Date.now()-M5.at(-1).t)/1000;
+  const age15=(Date.now()-M15.at(-1).t)/1000;
+  const age1=(Date.now()-H1.at(-1).t)/1000;
+  const fresh5=age5>=-60&&age5<=900;
+  const fresh15=age15>=-60&&age15<=2700;
+  const fresh1=age1>=-60&&age1<=10800;
+  const H4=aggregate(H1,4);
+  const tr4=trend(H4),tr1=trend(H1),tr15=trend(M15),tr5=trend(M5);
+  setTrend("trends", "WAIT");
+  $("trends").innerHTML="";
+  [["H4 TREND",tr4],["H1 TREND",tr1],["M15 TREND",tr15],["M5 TREND",tr5]].forEach(x=>{
+   const div=document.createElement("div");
+   div.className="tf";
+   const left=document.createElement("span");
+   left.textContent=x[0];
+   const right=document.createElement("b");
+   right.textContent=x[1];
+   right.className=x[1]==="BUY"?"green":x[1]==="SELL"?"red":"status";
+   div.append(left,right);$("trends").append(div);
+  });
 
-  const trends={
-   h4:analyzeTrend(h4),
-   h1:analyzeTrend(hourly),
-   m15:analyzeTrend(m15),
-   m5:analyzeTrend(m5)
-  };
+  const closes=M15.map(x=>x.c);
+  const e20=ema(closes,20).at(-1);
+  const e50=ema(closes,50).at(-1);
+  const e200=ema(closes,200).at(-1);
+  const r=rsi(closes),a=atr(M15),m=macd(closes),bb=bollinger(closes);
+  const fib=fibs(H1);
+  const recent=M15.slice(-50);
+  const support=Math.min(...recent.map(x=>x.l));
+  const resistance=Math.max(...recent.map(x=>x.h));
+  const pattern=candlePattern(M15);
+  const volatility=a&&price?(a/price*100):0;
+  setText("rsi",fmt(r));
+  setText("ema20",fmt(e20));setText("ema50",fmt(e50));setText("ema200",fmt(e200));
+  setText("macd",m?fmt(m.line-m.signal):"--");
+  setText("atr",fmt(a));
+  setText("bbHigh",bb?fmt(bb.high):"--");
+  setText("bbLow",bb?fmt(bb.low):"--");
+  ["236","382","500","618","786"].forEach(k=>setText("fib"+k,fmt(fib[k])));
+  setText("support",fmt(support));setText("resistance",fmt(resistance));
+  setText("candle",pattern);
+  setText("volatility",volatility?volatility.toFixed(3)+"%":"--");
 
-  setTrend("h4Trend",trends.h4);
-  setTrend("h1Trend",trends.h1);
-  setTrend("m15Trend",trends.m15);
-  setTrend("m5Trend",trends.m5);
-
-  const ema20=calculateEMA(m5,20);
-  const ema50=calculateEMA(m5,50);
-  const rsi=calculateRSI(m5,14);
-  const atr=calculateATR(m5,14);
-
-  const last=m5[m5.length-1];
-  const previous=m5[m5.length-2];
-  const lastCandleAge=(Date.now()/1000-last.t)/60;
-  const dataIsFresh=lastCandleAge>=-2 && lastCandleAge<=15;
-
-  const indicatorsValid=
-   Number.isFinite(ema20) &&
-   Number.isFinite(ema50) &&
-   Number.isFinite(rsi) &&
-   Number.isFinite(atr) &&
-   atr>0;
-
-  candleStatus.textContent=
-   "Last M5 candle age: "+lastCandleAge.toFixed(1)+" minutes";
-
-  document.getElementById("candleResults").innerHTML=
-   "<p>EMA 20: "+(Number.isFinite(ema20)?ema20.toFixed(2):"--")+"</p>"+
-   "<p>EMA 50: "+(Number.isFinite(ema50)?ema50.toFixed(2):"--")+"</p>"+
-   "<p>RSI 14: "+(Number.isFinite(rsi)?rsi.toFixed(2):"--")+"</p>"+
-   "<p>ATR 14: "+(Number.isFinite(atr)?atr.toFixed(2):"--")+"</p>";
-
-  if(!dataIsFresh){
-   throw new Error("M5 data is stale. Waiting for fresh candles.");
-  }
-
-  if(!indicatorsValid){
-   throw new Error("Indicators are not ready");
-  }
-
-  const bullish=
-   trends.h4==="BULLISH" &&
-   trends.h1==="BULLISH" &&
-   trends.m15==="BULLISH" &&
-   trends.m5==="BULLISH" &&
-   ema20>ema50 &&
-   Number(last.c)>Number(previous.c) &&
-   rsi>50;
-
-  const bearish=
-   trends.h4==="BEARISH" &&
-   trends.h1==="BEARISH" &&
-   trends.m15==="BEARISH" &&
-   trends.m5==="BEARISH" &&
-   ema20<ema50 &&
-   Number(last.c)<Number(previous.c) &&
-   rsi<50;
-
-  let setupStatus="WAIT";
-  if(bullish) setupStatus="BUY WATCH";
-  if(bearish) setupStatus="SELL WATCH";
-
-  document.getElementById("signal").textContent=setupStatus;
-
-  if(setupStatus==="BUY WATCH" || setupStatus==="SELL WATCH"){
-   const entry=Number(last.c);
-   const distance=atr*1.5;
-   const isBuy=setupStatus==="BUY WATCH";
-
-   const sl=isBuy?entry-distance:entry+distance;
-   const tp1=isBuy?entry+distance:entry-distance;
-   const tp2=isBuy?entry+distance*2:entry-distance*2;
-
-   showPriceLevel("entry",entry);
-   showPriceLevel("stopLoss",sl);
-   showPriceLevel("takeProfit1",tp1);
-   showPriceLevel("takeProfit2",tp2);
-
-   document.getElementById("alert").textContent=
-    setupStatus+" — Conditions aligned. Verify before trading.";
+  const ready=priceFresh&&fresh5&&fresh15&&fresh1&&spot.data_state?.status==="fresh";
+  if(ready){
+   updateTrade(M15,tr15,tr5,tr1,tr4,{rsi:r,atr:a,macd:m},true);
+   setText("system","Market data received. Freshness checks passed.");
+   setText("alerts","Data is fresh. Check news and broker spread before any trade.");
   }else{
-   resetSetup("No confirmed setup. Wait for market alignment.");
+   clearTrade("WAIT — stale, incomplete or unconfirmed market data. No trade signal.");
+   setText("system","WAIT — data freshness check failed.");
+   setText("alerts","Do not use a signal until all required data is fresh.");
   }
-
-  system.textContent=
-   "Connected • Data checked • "+new Date().toLocaleTimeString();
-
- }catch(error){
-  setTrend("h4Trend","WAIT");
-  setTrend("h1Trend","WAIT");
-  setTrend("m15Trend","WAIT");
-  setTrend("m5Trend","WAIT");
-  resetSetup(error.message);
-  candleStatus.textContent="Analysis unavailable.";
-  document.getElementById("candleResults").innerHTML=
-   "<p>"+error.message+"</p>";
-  system.textContent="Data error: "+error.message;
- }
+  if(!fresh5)setText("alerts","M5 candles are stale. Waiting for fresh candles.");
+  if(!fresh15)setText("alerts","M15 candles are stale. Waiting for fresh candles.");
+  setText("lastUpdate","Last analysis: "+new Date().toLocaleString());
+ }catch(err){
+  clearTrade("Analysis unavailable: "+err.message);
+  setText("system","Data error: "+err.message);
+  setText("alerts","Unable to confirm market data. No trade signal.");
+ }finally{busy=false;}
 }
-
 refreshAll();
 setInterval(refreshAll,60000);
 </script>
 </body>
 </html>
-
