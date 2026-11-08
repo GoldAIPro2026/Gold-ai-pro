@@ -1,0 +1,318 @@
+
+name: SIMO GOLD AI Alerts
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: simo-gold-alerts
+  cancel-in-progress: false
+
+jobs:
+  alerts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Analyze XAUUSD and notify
+        env:
+          ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
+          ONESIGNAL_APP_ID: 8ff56b89-ee3d-4201-89c6-f38fd2f17e58
+        run: |
+          cat > alert.py <<'PY'
+          import os
+          import json
+          import time
+          import math
+          import urllib.request
+          from collections import defaultdict
+
+          BASE = "https://xaus.com/api/v1"
+          STATE_FILE = ".simo-gold-state.json"
+
+          def get_json(url):
+              req = urllib.request.Request(
+                  url, headers={"User-Agent": "SIMO-GOLD-AI"}
+              )
+              with urllib.request.urlopen(req, timeout=25) as response:
+                  return json.loads(response.read().decode())
+
+          def ema(values, period):
+              if len(values) < period:
+                  return None
+              result = sum(values[:period]) / period
+              multiplier = 2 / (period + 1)
+              for value in values[period:]:
+                  result = value * multiplier + result * (1 - multiplier)
+              return result
+
+          def rsi(values, period=14):
+              if len(values) <= period:
+                  return None
+              changes = [values[i] - values[i-1] for i in range(1, len(values))]
+              gains = [max(x, 0) for x in changes]
+              losses = [max(-x, 0) for x in changes]
+              avg_gain = sum(gains[:period]) / period
+              avg_loss = sum(losses[:period]) / period
+
+              for i in range(period, len(changes)):
+                  avg_gain = (avg_gain * (period-1) + gains[i]) / period
+                  avg_loss = (avg_loss * (period-1) + losses[i]) / period
+
+              if avg_loss == 0:
+                  return 100 if avg_gain else 50
+              return 100 - 100 / (1 + avg_gain / avg_loss)
+
+          def macd_histogram(values):
+              if len(values) < 35:
+                  return None
+              line = []
+              for i in range(len(values)):
+                  part = values[:i+1]
+                  fast = ema(part, 12)
+                  slow = ema(part, 26)
+                  if fast is not None and slow is not None:
+                      line.append(fast - slow)
+              if len(line) < 9:
+                  return None
+              signal = ema(line, 9)
+              if signal is None:
+                  return None
+              return line[-1] - signal
+
+          def get_candles(range_value, interval):
+              url = (
+                  f"{BASE}/chart?symbol=xau"
+                  f"&range={range_value}&interval={interval}"
+              )
+              data = get_json(url)
+              points = data.get("points")
+              if not isinstance(points, list):
+                  raise RuntimeError("Invalid candle response: " + interval)
+
+              result = []
+              for point in points:
+                  t = float(point["t"])
+                  if t > 1e12:
+                      t /= 1000
+                  candle = {
+                      "t": t,
+                      "o": float(point["o"]),
+                      "h": float(point["h"]),
+                      "l": float(point["l"]),
+                      "c": float(point["c"])
+                  }
+                  if not all(math.isfinite(candle[k]) for k in ("o","h","l","c")):
+                      continue
+                  if candle["h"] < max(candle["o"], candle["c"], candle["l"]):
+                      continue
+                  if candle["l"] > min(candle["o"], candle["c"], candle["h"]):
+                      continue
+                  result.append(candle)
+
+              result.sort(key=lambda x: x["t"])
+              unique = {c["t"]: c for c in result}
+              return sorted(unique.values(), key=lambda x: x["t"])
+
+          def completed_candles(data, seconds):
+              now = time.time()
+              return [c for c in data if c["t"] + seconds <= now]
+
+          def make_h4(hourly):
+              groups = defaultdict(list)
+              for candle in hourly:
+                  groups[int(candle["t"] // 14400)].append(candle)
+
+              result = []
+              for bucket, group in groups.items():
+                  group.sort(key=lambda x: x["t"])
+                  if len(group) != 4:
+                      continue
+                  if any(
+                      group[i]["t"] - group[i-1]["t"] != 3600
+                      for i in range(1, 4)
+                  ):
+                      continue
+                  if bucket * 14400 + 14400 > time.time():
+                      continue
+
+                  result.append({
+                      "t": bucket * 14400,
+                      "o": group[0]["o"],
+                      "h": max(x["h"] for x in group),
+                      "l": min(x["l"] for x in group),
+                      "c": group[3]["c"]
+                  })
+
+              return sorted(result, key=lambda x: x["t"])
+
+          def get_trend(candles):
+              closes = [c["c"] for c in candles]
+              e20 = ema(closes, 20)
+              e50 = ema(closes, 50)
+              e200 = ema(closes, 200)
+
+              if e20 is None or e50 is None or e200 is None:
+                  return "WAIT"
+
+              if e20 > e50 > e200:
+                  return "BULLISH"
+              if e20 < e50 < e200:
+                  return "BEARISH"
+              return "NEUTRAL"
+
+          def send_push(signal, price):
+              title = (
+                  "SIMO GOLD AI - BUY WATCH"
+                  if signal == "BUY"
+                  else "SIMO GOLD AI - SELL WATCH"
+              )
+              message = (
+                  f"XAUUSD | Price: ${price:.2f} | "
+                  "راجع الشارت وتأكد من الإشارة قبل أي دخول."
+              )
+
+              payload = {
+                  "app_id": os.environ["ONESIGNAL_APP_ID"],
+                  "included_segments": ["Subscribed Users"],
+                  "headings": {"en": title},
+                  "contents": {"en": message},
+                  "target_channel": "push"
+              }
+
+              request = urllib.request.Request(
+                  "https://api.onesignal.com/notifications",
+                  data=json.dumps(payload).encode(),
+                  headers={
+                      "Content-Type": "application/json",
+                      "Authorization": "Key " + os.environ["ONESIGNAL_REST_API_KEY"]
+                  },
+                  method="POST"
+              )
+
+              with urllib.request.urlopen(request, timeout=25) as response:
+                  result = json.loads(response.read().decode())
+                  print("OneSignal response:", result)
+                  if response.status not in (200, 201) or result.get("errors"):
+                      raise RuntimeError("OneSignal rejected notification")
+
+          def main():
+              api_key = os.environ.get("ONESIGNAL_REST_API_KEY")
+              if not api_key:
+                  raise RuntimeError("Missing GitHub secret ONESIGNAL_REST_API_KEY")
+
+              spot = get_json(BASE + "/spot?compact=1")
+              price = float(spot["spot_usd_oz"])
+              state = spot.get("data_state", {})
+              if state.get("status") != "fresh":
+                  raise RuntimeError("Gold price is not fresh")
+              if float(state.get("age_seconds", 999999)) > 300:
+                  raise RuntimeError("Gold price is too old")
+
+              h1_raw = get_candles("3mo", "1h")
+              m15_raw = get_candles("5d", "15m")
+              m5_raw = get_candles("5d", "5m")
+
+              h1 = completed_candles(h1_raw, 3600)
+              m15 = completed_candles(m15_raw, 900)
+              m5 = completed_candles(m5_raw, 300)
+              h4 = make_h4(h1)
+
+              if min(len(h4), len(h1), len(m15), len(m5)) < 205:
+                  raise RuntimeError("Insufficient candle history for EMA 200")
+
+              now = time.time()
+              if now - (m5[-1]["t"] + 300) > 900:
+                  raise RuntimeError("M5 candles are stale")
+              if now - (m15[-1]["t"] + 900) > 2700:
+                  raise RuntimeError("M15 candles are stale")
+              if now - (h1[-1]["t"] + 3600) > 10800:
+                  raise RuntimeError("H1 candles are stale")
+
+              trends = [
+                  get_trend(h4),
+                  get_trend(h1),
+                  get_trend(m15),
+                  get_trend(m5)
+              ]
+
+              closes = [c["c"] for c in m5]
+              e20 = ema(closes, 20)
+              e50 = ema(closes, 50)
+              e200 = ema(closes, 200)
+              rsi_value = rsi(closes)
+              macd_value = macd_histogram(closes)
+
+              if any(x is None for x in (e20, e50, e200, rsi_value, macd_value)):
+                  raise RuntimeError("Indicators unavailable")
+
+              last = m5[-1]
+              previous = m5[-2]
+
+              buy = (
+                  all(x == "BULLISH" for x in trends)
+                  and e20 > e50 > e200
+                  and 50 < rsi_value < 70
+                  and macd_value > 0
+                  and last["c"] > previous["c"]
+              )
+
+              sell = (
+                  all(x == "BEARISH" for x in trends)
+                  and e20 < e50 < e200
+                  and 30 < rsi_value < 50
+                  and macd_value < 0
+                  and last["c"] < previous["c"]
+              )
+
+              signal = "BUY" if buy else "SELL" if sell else "WAIT"
+
+              print("XAUUSD price:", price)
+              print("H4/H1/M15/M5:", trends)
+              print("EMA20:", e20, "EMA50:", e50, "EMA200:", e200)
+              print("RSI:", rsi_value, "MACD histogram:", macd_value)
+              print("Current signal:", signal)
+
+              previous_signal = "WAIT"
+              if os.path.exists(STATE_FILE):
+                  try:
+                      with open(STATE_FILE) as f:
+                          previous_signal = json.load(f).get("signal", "WAIT")
+                  except Exception:
+                      previous_signal = "WAIT"
+
+              print("Previous signal:", previous_signal)
+
+              if signal != previous_signal:
+                  if signal in ("BUY", "SELL"):
+                      send_push(signal, price)
+
+                  with open(STATE_FILE, "w") as f:
+                      json.dump({"signal": signal}, f)
+
+          if __name__ == "__main__":
+              main()
+          PY
+
+          python alert.py
+
+      - name: Save signal state
+        run: |
+          if [[ -n "$(git status --porcelain -- .simo-gold-state.json)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .simo-gold-state.json
+            git commit -m "Update gold alert state [skip ci]"
+            git push
+          fi
