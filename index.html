@@ -155,7 +155,7 @@ if(validPoints.length!==data.points.length){
 }
   return [...data.points].sort((a,b)=>Number(a.t)-Number(b.t));
  }
-
+console.log("CANDLE TIMESTAMPS:", data.points[0].t, data.points[data.points.length-1].t);
  function analyzeTrend(candles){
   if(candles.length<20) return "WAIT";
   const last20=candles.slice(-20);
@@ -326,6 +326,8 @@ document.getElementById("signal").textContent=filterStatus;
    "<p>Latest M5 close: "+(latest?"$"+Number(latest.c).toFixed(2):"--")+"</p>"+
    "<p>Previous M5 close: "+(previous?"$"+Number(previous.c).toFixed(2):"--")+"</p>"+
    "<p>H4 candles: "+h4.length+"</p>"+
+   "<p>Timestamp first M5: "+m5[0].t+"</p>"+
+"<p>Timestamp last M5: "+m5[m5.length-1].t+"</p>"+
    "<p>H1 candles: "+hourly.length+"</p>"+
    "<p>M15 candles: "+m15.length+"</p>"+
    "<p>M5 candles: "+m5.length+"</p>"+
