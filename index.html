@@ -327,6 +327,7 @@ document.getElementById("signal").textContent=filterStatus;
    "<p>Previous M5 close: "+(previous?"$"+Number(previous.c).toFixed(2):"--")+"</p>"+
    "<p>H4 candles: "+h4.length+"</p>"+
    "<p>H4 first timestamp: "+h4[0].t+"</p>"+
+   "<p>H4 last timestamp: "+h4[h4.length-1].t+"</p>"+
    "<p>Timestamp first M5: "+m5[0].t+"</p>"+
 "<p>Timestamp last M5: "+m5[m5.length-1].t+"</p>"+
    "<p>H1 candles: "+hourly.length+"</p>"+
