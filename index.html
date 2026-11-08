@@ -237,7 +237,7 @@ function calculateRSI(candles, period=14){
 
  try{
   const responses=await Promise.allSettled([
-   getCandles("5d","1h"),
+   getCandles("10d","1h"),
    getCandles("1d","15m"),
    getCandles("1d","5m")
   ]);
@@ -254,7 +254,7 @@ const m5=responses[2].value;
   hourly.length<20 ||
   m15.length<20 ||
   m5.length<50 ||
-  h4.length<5
+  h4.length<50
 ){
   throw new Error("Insufficient candle data");
 }
@@ -279,39 +279,49 @@ const m5=responses[2].value;
   const previous=m5[m5.length-2];
   const m5Bullish=latest && previous && Number(latest.c)>Number(previous.c);
 const m5Bearish=latest && previous && Number(latest.c)<Number(previous.c);
-  const ema20=calculateEMA(m5,20);
-const ema50=calculateEMA(m5,50);
+  const ema20H4=calculateEMA(h4,20);
+const ema50H4=calculateEMA(h4,50);
+
+const ema20H1=calculateEMA(hourly,20);
+const ema50H1=calculateEMA(hourly,50);
+
+const ema20M15=calculateEMA(m15,20);
+const ema50M15=calculateEMA(m15,50);
+
+const ema20M5=calculateEMA(m5,20);
+const ema50M5=calculateEMA(m5,50);
 const rsi14=calculateRSI(m5,14);
   const m5Confirmation=
  m5Bullish ? "BULLISH" :
  m5Bearish ? "BEARISH" : "NEUTRAL";
+  const bullishEMA=
+ Number.isFinite(ema20H4) && ema20H4>ema50H4 &&
+ Number.isFinite(ema20H1) && ema20H1>ema50H1 &&
+ Number.isFinite(ema20M15) && ema20M15>ema50M15 &&
+ Number.isFinite(ema20M5) && ema20M5>ema50M5;
+
+const bearishEMA=
+ Number.isFinite(ema20H4) && ema20H4<ema50H4 &&
+ Number.isFinite(ema20H1) && ema20H1<ema50H1 &&
+ Number.isFinite(ema20M15) && ema20M15<ema50M15 &&
+ Number.isFinite(ema20M5) && ema20M5<ema50M5;
   const filterStatus=
  trends.h4==="BULLISH" &&
  trends.h1==="BULLISH" &&
  trends.m15==="BULLISH" &&
  trends.m5==="BULLISH" &&
+ bullishEMA &&
  m5Bullish &&
-   Number.isFinite(ema20) &&
-Number.isFinite(ema50) &&
-Number.isFinite(rsi14) &&
- ema20!==null &&
- ema50!==null &&
- rsi14!==null &&
- ema20>ema50 &&
+ Number.isFinite(rsi14) &&
  rsi14>50
  ? "BUY WATCH"
  : trends.h4==="BEARISH" &&
    trends.h1==="BEARISH" &&
    trends.m15==="BEARISH" &&
    trends.m5==="BEARISH" &&
+   bearishEMA &&
    m5Bearish &&
-   Number.isFinite(ema20) &&
-Number.isFinite(ema50) &&
-Number.isFinite(rsi14) &&
-   ema20!==null &&
-   ema50!==null &&
-   rsi14!==null &&
-   ema20<ema50 &&
+   Number.isFinite(rsi14) &&
    rsi14<50
    ? "SELL WATCH"
    : "WAIT";
@@ -337,8 +347,14 @@ document.getElementById("signal").textContent=filterStatus;
    "<p>M15 candles: "+m15.length+"</p>"+
    "<p>M5 candles: "+m5.length+"</p>"+
 "<p>M5 confirmation: "+m5Confirmation+"</p>"+
-   "<p>EMA 20: "+(ema20!==null?"$"+ema20.toFixed(2):"--")+"</p>"+
-"<p>EMA 50: "+(ema50!==null?"$"+ema50.toFixed(2):"--")+"</p>"+
+ "<p>H4 EMA 20: "+(ema20H4!==null?"$"+ema20H4.toFixed(2):"--")+"</p>"+
+"<p>H4 EMA 50: "+(ema50H4!==null?"$"+ema50H4.toFixed(2):"--")+"</p>"+
+"<p>H1 EMA 20: "+(ema20H1!==null?"$"+ema20H1.toFixed(2):"--")+"</p>"+
+"<p>H1 EMA 50: "+(ema50H1!==null?"$"+ema50H1.toFixed(2):"--")+"</p>"+
+"<p>M15 EMA 20: "+(ema20M15!==null?"$"+ema20M15.toFixed(2):"--")+"</p>"+
+"<p>M15 EMA 50: "+(ema50M15!==null?"$"+ema50M15.toFixed(2):"--")+"</p>"+
+"<p>M5 EMA 20: "+(ema20M5!==null?"$"+ema20M5.toFixed(2):"--")+"</p>"+
+"<p>M5 EMA 50: "+(ema50M5!==null?"$"+ema50M5.toFixed(2):"--")+"</p>"+
 "<p>RSI 14: "+(rsi14!==null?rsi14.toFixed(2):"--")+"</p>"+
 "<p>Filtered status: "+filterStatus+"</p>";
 
