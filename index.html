@@ -440,9 +440,9 @@ async function refreshAll(){
   await updateGoldPrice();
 
   const responses=await Promise.all([
-   getCandles("10d","1h"),
-   getCandles("1d","15m"),
-   getCandles("1d","5m")
+   getCandles("1mo","1h"),
+   getCandles("5d","15m"),
+   getCandles("2d","5m")
   ]);
 
   const hourly=responses[0];
