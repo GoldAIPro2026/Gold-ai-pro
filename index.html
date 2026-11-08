@@ -15,8 +15,24 @@
 body{margin:0;padding:18px;background:radial-gradient(ellipse at 50% -15%,#342817 0%,#111116 38%,var(--bg) 75%);color:var(--text);font-family:Arial,sans-serif;min-height:100vh}
 .container{max-width:650px;margin:auto}
 header{text-align:center;padding:20px 5px 24px}
-.logo{width:58px;height:58px;margin:0 auto 12px;border:1px solid #8b6b32;border-radius:18px;display:grid;place-items:center;background:linear-gradient(145deg,#292116,#0e0e11);box-shadow:0 0 28px #c7963025}
-.logo svg{width:34px;height:34px;fill:none;stroke:var(--gold2);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.logo{
+width:68px;
+height:68px;
+margin:0 auto 12px;
+border:2px solid #d6a843;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:linear-gradient(145deg,#3b2b0d,#090909);
+box-shadow:0 0 25px #d6a84355;
+}
+
+.logo span{
+font-size:38px;
+font-weight:900;
+color:#f5c75e;
+text-shadow:0 0 12px #d6a843;
+}
 h1{margin:0;color:var(--gold2);letter-spacing:2.5px;font-size:27px;text-shadow:0 0 18px #d8ad5233}
 .sub{color:var(--muted);font-size:11px;letter-spacing:1.5px;margin-top:7px}
 .sub + .sub{font-size:10px;letter-spacing:2px;color:#777780}
@@ -40,10 +56,10 @@ footer{text-align:center;color:#777780;font-size:10px;line-height:1.8;padding:20
 <body>
 <div class="container">
 <header>
-<div class="logo" aria-hidden="true">
-<svg viewBox="0 0 40 40"><path d="M7 29h26M10 25l3-12 7 7 7-7 3 12H10Z"/><path d="M15 29v3m10-3v3M20 7v5m-2.5-2.5h5"/></svg>
+<div class="logo profile-logo">
+  <span>S</span>
 </div>
-<h1>GOLD NORDO AI</h1>
+<h1>SIMO GOLD AI</h1>
 <div class="sub">XAUUSD • SMART TRADING ASSISTANT</div>
 <div class="sub">MARKET ANALYSIS SYSTEM</div>
 <div class="gold-line"></div>
