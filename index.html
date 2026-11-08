@@ -120,7 +120,21 @@ async function getGoldCandles(){
   const response=await fetch(url);
   if(!response.ok) throw new Error(interval+" data error");
   const data=await response.json();
-  if(!Array.isArray(data.points)) throw new Error("Invalid candle data");
+  if(!Array.isArray(data.points) || data.points.length===0){
+  throw new Error("Invalid candle data");
+}
+
+const validPoints=data.points.filter(c=>
+  Number.isFinite(Number(c.t)) &&
+  Number.isFinite(Number(c.o)) &&
+  Number.isFinite(Number(c.h)) &&
+  Number.isFinite(Number(c.l)) &&
+  Number.isFinite(Number(c.c))
+);
+
+if(validPoints.length!==data.points.length){
+  throw new Error("Invalid candle values");
+}
   return data.points;
  }
 
@@ -136,7 +150,48 @@ async function getGoldCandles(){
   if(average5<average20 && last<average5) return "BEARISH";
   return "NEUTRAL";
  }
+function calculateEMA(candles, period){
+  const closes=candles.map(c=>Number(c.c));
+  if(closes.length<period) return null;
 
+  const multiplier=2/(period+1);
+  let ema=closes.slice(0,period)
+    .reduce((sum,value)=>sum+value,0)/period;
+
+  for(let i=period;i<closes.length;i++){
+    ema=(closes[i]-ema)*multiplier+ema;
+  }
+
+  return ema;
+}
+
+function calculateRSI(candles, period=14){
+  const closes=candles.map(c=>Number(c.c));
+  if(closes.length<period+1) return null;
+
+  let gains=0;
+  let losses=0;
+
+  for(let i=1;i<=period;i++){
+    const change=closes[i]-closes[i-1];
+    if(change>0) gains+=change;
+    else losses-=change;
+  }
+
+  let avgGain=gains/period;
+  let avgLoss=losses/period;
+
+  for(let i=period+1;i<closes.length;i++){
+    const change=closes[i]-closes[i-1];
+    avgGain=(avgGain*(period-1)+Math.max(change,0))/period;
+    avgLoss=(avgLoss*(period-1)+Math.max(-change,0))/period;
+  }
+
+  if(avgLoss===0) return avgGain===0?50:100;
+
+  const rs=avgGain/avgLoss;
+  return 100-(100/(1+rs));
+}
  function makeH4(hourly){
   const groups={};
   hourly.forEach(c=>{
@@ -147,7 +202,12 @@ async function getGoldCandles(){
 
   return Object.values(groups)
    .map(group=>group.sort((a,b)=>a.t-b.t))
-   .filter(group=>group.length===4)
+ .filter(group=>
+    group.length===4 &&
+    group[1].t-group[0].t===3600 &&
+    group[2].t-group[1].t===3600 &&
+    group[3].t-group[2].t===3600
+)
    .map(group=>({
     t:group[0].t,
     o:Number(group[0].o),
@@ -164,10 +224,13 @@ async function getGoldCandles(){
    getCandles("1d","5m")
   ]);
 
-  const hourly=responses[0].status==="fulfilled"?responses[0].value:[];
-  const m15=responses[1].status==="fulfilled"?responses[1].value:[];
-  const m5=responses[2].status==="fulfilled"?responses[2].value:[];
+  if(responses.some(r=>r.status!=="fulfilled")){
+  throw new Error("Incomplete market data");
+}
 
+const hourly=responses[0].value;
+const m15=responses[1].value;
+const m5=responses[2].value;
   const h4=makeH4(hourly);
 
   const trends={
@@ -176,22 +239,10 @@ async function getGoldCandles(){
    m15:analyzeTrend(m15),
    m5:analyzeTrend(m5)
   };
-  const filterStatus=
- trends.h4==="BULLISH" &&
- trends.h1==="BULLISH" &&
- trends.m15==="BULLISH" &&
- trends.m5==="BULLISH" &&
- m5Bullish
- ? "BUY WATCH"
- : trends.h4==="BEARISH" &&
-   trends.h1==="BEARISH" &&
-   trends.m15==="BEARISH" &&
-   trends.m5==="BEARISH" &&
-   m5Bearish
-   ? "SELL WATCH"
-   : "WAIT";
+  
+ 
 
-document.getElementById("signal").textContent=filterStatus;
+
 
   setTrend("h4Trend",trends.h4);
   setTrend("h1Trend",trends.h1);
@@ -202,9 +253,38 @@ document.getElementById("signal").textContent=filterStatus;
   const previous=m5[m5.length-2];
   const m5Bullish=latest && previous && Number(latest.c)>Number(previous.c);
 const m5Bearish=latest && previous && Number(latest.c)<Number(previous.c);
+  const ema20=calculateEMA(m5,20);
+const ema50=calculateEMA(m5,50);
+const rsi14=calculateRSI(m5,14);
   const m5Confirmation=
  m5Bullish ? "BULLISH" :
  m5Bearish ? "BEARISH" : "NEUTRAL";
+  const filterStatus=
+ trends.h4==="BULLISH" &&
+ trends.h1==="BULLISH" &&
+ trends.m15==="BULLISH" &&
+ trends.m5==="BULLISH" &&
+ m5Bullish &&
+ ema20!==null &&
+ ema50!==null &&
+ rsi14!==null &&
+ ema20>ema50 &&
+ rsi14>50
+ ? "BUY WATCH"
+ : trends.h4==="BEARISH" &&
+   trends.h1==="BEARISH" &&
+   trends.m15==="BEARISH" &&
+   trends.m5==="BEARISH" &&
+   m5Bearish &&
+   ema20!==null &&
+   ema50!==null &&
+   rsi14!==null &&
+   ema20<ema50 &&
+   rsi14<50
+   ? "SELL WATCH"
+   : "WAIT";
+
+document.getElementById("signal").textContent=filterStatus;
 
   results.innerHTML=
    "<p>H4 direction: "+trends.h4+"</p>"+
@@ -218,6 +298,9 @@ const m5Bearish=latest && previous && Number(latest.c)<Number(previous.c);
    "<p>M15 candles: "+m15.length+"</p>"+
    "<p>M5 candles: "+m5.length+"</p>"+
 "<p>M5 confirmation: "+m5Confirmation+"</p>"+
+   "<p>EMA 20: "+(ema20!==null?"$"+ema20.toFixed(2):"--")+"</p>"+
+"<p>EMA 50: "+(ema50!==null?"$"+ema50.toFixed(2):"--")+"</p>"+
+"<p>RSI 14: "+(rsi14!==null?rsi14.toFixed(2):"--")+"</p>"+
 "<p>Filtered status: "+filterStatus+"</p>";
 
   status.textContent="Multi-timeframe analysis updated";
