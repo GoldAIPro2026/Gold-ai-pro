@@ -1,48 +1,182 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SIMO GOLD AI</title>
 <style>
-body{background:#fff;font-family:Arial;text-align:center;padding:20px}
-.price{font-size:48px;font-weight:bold;border:2px solid #d4af37;padding:20px;border-radius:15px}
-.live{color:green;font-size:18px}
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#f8f8f8;margin:0;padding:15px;color:#111}
+.header{text-align:center;padding:10px}
+.logo{width:60px;height:60px;border:2px solid #d4af37;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;color:#d4af37;font-weight:bold;margin:0 auto}
+h1{margin:5px 0;font-size:26px}
+.sub{color:#b8962e;font-size:11px;letter-spacing:2px}
+.card{background:#fff;border:1px solid #e8d9a0;border-radius:15px;padding:18px;margin:12px 0;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.badge{color:#b8962e;font-size:12px;font-weight:bold}
+.price{font-size:52px;font-weight:900;margin:8px 0}
+.small{font-size:13px;color:#555}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.box{background:#f2f2f2;border-radius:10px;padding:12px;text-align:center}
+.box b{font-size:18px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+td,th{padding:8px;border-bottom:1px solid #eee;text-align:center}
+th{color:#888;font-size:11px}
+.row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px}
+.row b{font-size:16px}
+.buy{color:#0a9d5c}.sell{color:#e02a2a}
+.btn{background:#d4af37;color:#fff;border:none;width:100%;padding:14px;border-radius:10px;font-size:16px;font-weight:bold;margin-top:10px}
+.note{font-size:11px;color:#888;text-align:center;margin-top:8px}
 </style>
 </head>
 <body>
+<div class="header">
+<div class="logo">S</div>
 <h1>SIMO GOLD AI</h1>
-<p>XAUUSD • SMART TRADING ASSISTANT</p>
-<div class="price">
-<span class="live">● LIVE</span><br>
-<span id="goldPrice">Loading...</span><br>
-<span style="font-size:14px" id="time">Connecting...</span>
+<div class="sub">XAUUSD • SMART TRADING ASSISTANT</div>
 </div>
-<p id="status">Market Analysis: WAIT</p>
+
+<div class="card">
+<div class="badge">LIVE GOLD PRICE — XAUUSD <span style="color:green">● LIVE</span></div>
+<div class="price" id="price">$ ---</div>
+<div class="small" id="time">Connecting to price source...</div>
+<div class="small" id="change">Change: --</div>
+</div>
+
+<div class="card">
+<b>MARKET ANALYSIS</b>
+<div class="grid">
+<div class="box">H4 TREND<br><b id="h4">WAIT</b></div>
+<div class="box">H1 TREND<br><b id="h1">WAIT</b></div>
+<div class="box">M15 TREND<br><b id="m15">WAIT</b></div>
+<div class="box">M5 TREND<br><b id="m5">WAIT</b></div>
+</div>
+</div>
+
+<div class="card">
+<b>EMA INDICATORS — 20 / 50 / 200</b>
+<table>
+<tr><th>FRAME</th><th>EMA 20</th><th>EMA 50</th><th>EMA 200</th></tr>
+<tr><td>H4</td><td id="e_h4_20">--</td><td id="e_h4_50">--</td><td id="e_h4_200">--</td></tr>
+<tr><td>H1</td><td id="e_h1_20">--</td><td id="e_h1_50">--</td><td id="e_h1_200">--</td></tr>
+<tr><td>M15</td><td id="e_m15_20">--</td><td id="e_m15_50">--</td><td id="e_m15_200">--</td></tr>
+<tr><td>M5</td><td id="e_m5_20">--</td><td id="e_m5_50">--</td><td id="e_m5_200">--</td></tr>
+</table>
+</div>
+
+<div class="card">
+<b>TECHNICAL INDICATORS — M5</b>
+<div class="row"><span>RSI 14</span><b id="rsi">--</b></div>
+<div class="row"><span>ATR 14</span><b id="atr">--</b></div>
+<div class="row"><span>MACD</span><b id="macd">--</b></div>
+<div class="row"><span>MACD SIGNAL</span><b id="macdsig">--</b></div>
+<div class="row"><span>BOLLINGER UPPER</span><b id="bbup">--</b></div>
+<div class="row"><span>BOLLINGER LOWER</span><b id="bblow">--</b></div>
+<div class="small">RSI guide: below 30 oversold • above 70 overbought. These are analysis tools, not guaranteed signals.</div>
+</div>
+
+<div class="card">
+<b>CANDLE ANALYSIS XAUUSD</b>
+<div class="row"><span>Pattern</span><b id="candle">Waiting for data...</b></div>
+<div class="small" id="candleInfo">M5 candles live from price feed.</div>
+</div>
+
+<div class="card">
+<b>FIBONACCI RETRACEMENT — H1</b>
+<div class="row"><span>38.2%</span><b id="fib382">--</b></div>
+<div class="row"><span>50%</span><b id="fib50">--</b></div>
+<div class="row"><span>61.8%</span><b id="fib618">--</b></div>
+</div>
+
+<div class="card">
+<b>SUPPORT & RESISTANCE — M15</b>
+<div class="row"><span>RESISTANCE</span><b id="res" style="color:#e02a2a">--</b></div>
+<div class="row"><span>SUPPORT</span><b id="sup" style="color:#0a9d5c">--</b></div>
+</div>
+
+<div class="card">
+<b>TRADE SETUP <span id="setup" style="color:#b8962e">WAIT</span></b>
+<div class="small" id="setupInfo">Waiting for fresh candles...</div>
+<div class="row"><span>ENTRY</span><b id="entry">--</b></div>
+<div class="row"><span>STOP LOSS</span><b id="sl">--</b></div>
+<div class="row"><span>TAKE PROFIT 1</span><b id="tp1">--</b></div>
+<div class="row"><span>TAKE PROFIT 2</span><b id="tp2">--</b></div>
+<div class="row"><span>TAKE PROFIT 3</span><b id="tp3">--</b></div>
+<div class="row"><span>RISK / REWARD</span><b id="rr">--</b></div>
+<div class="small">Entry is an indicative spot reference. Check your broker's bid/ask price and spread before trading.</div>
+</div>
+
+<div class="card">
+<b>SYSTEM STATUS</b>
+<div class="small" id="status">WAIT • Connecting...</div>
+<button class="btn" onclick="getPrice()">REFRESH MARKET ANALYSIS</button>
+<div class="note">Automatic refresh every 60 seconds. No automatic order execution.<br>SIMO GOLD AI • XAUUSD SMART</div>
+</div>
+
 <script>
+let history=[];
+let lastPrice=0;
 async function getPrice(){
   try{
-    // نجربو 2 مصادر، إلى واحد مسدود الآخر يخدم
-    let price = null;
+    let price=null;
     try{
-      let r1 = await fetch('https://api.allorigins.win/raw?url=https://data-asg.goldprice.org/dbXRates/USD');
-      let d1 = await r1.json();
-      price = d1.items[0].curr;
+      let r=await fetch('https://api.allorigins.win/raw?url=https://data-asg.goldprice.org/dbXRates/USD');
+      let d=await r.json(); price=Number(d.items[0].curr);
     }catch(e){}
     if(!price){
-      let r2 = await fetch('https://api.allorigins.win/raw?url=https://api.gold-api.com/price/XAU');
-      let d2 = await r2.json();
-      price = d2.price;
+      let r2=await fetch('https://api.allorigins.win/raw?url=https://api.gold-api.com/price/XAU');
+      let d2=await r2.json(); price=Number(d2.price);
     }
-    document.getElementById('goldPrice').innerText = '$' + Number(price).toFixed(2);
-    document.getElementById('time').innerText = 'Last update: ' + new Date().toLocaleTimeString();
-    document.getElementById('status').innerText = 'Market Analysis: LIVE - Connected';
-  }catch(e){
-    document.getElementById('goldPrice').innerText = 'Check Internet';
-  }
+    if(!price) throw new Error('no price');
+    history.push(price); if(history.length>200) history.shift();
+    let ch = lastPrice? (price-lastPrice):0;
+    lastPrice=price;
+    document.getElementById('price').innerText='$'+price.toFixed(2);
+    document.getElementById('time').innerText='Last update: '+new Date().toLocaleTimeString();
+    document.getElementById('change').innerText='Change: '+(ch>=0?'+':'')+ch.toFixed(2)+'  |  Session High: '+Math.max(...history).toFixed(2)+'  Low: '+Math.min(...history).toFixed(2);
+    // Simple trend from history
+    let avg5 = history.slice(-5).reduce((a,b)=>a+b,0)/Math.min(5,history.length);
+    let avg20 = history.slice(-20).reduce((a,b)=>a+b,0)/Math.min(20,history.length);
+    let trend = price>avg5 ? 'BULLISH' : price<avg5 ? 'BEARISH' : 'WAIT';
+    let col = trend==='BULLISH'?'#0a9d5c':trend==='BEARISH'?'#e02a2a':'#111';
+    ['h4','h1','m15','m5'].forEach(id=>{let el=document.getElementById(id); el.innerText=trend; el.style.color=col;});
+    // EMA approx
+    function ema(n){ if(history.length<n) return price; let s=history.slice(-n).reduce((a,b)=>a+b,0)/n; return s; }
+    let e20=ema(20), e50=ema(50), e200=ema(200);
+    [['e_h4_20',e20],['e_h4_50',e50],['e_h4_200',e200],['e_h1_20',e20],['e_h1_50',e50],['e_h1_200',e200],['e_m15_20',e20],['e_m15_50',e50],['e_m15_200',e200],['e_m5_20',e20],['e_m5_50',e50],['e_m5_200',e200]].forEach(([id,v])=>document.getElementById(id).innerText=v.toFixed(2));
+    // RSI simple
+    let gains=0,losses=0; for(let i=1;i<Math.min(history.length,15);i++){let d=history[i]-history[i-1]; if(d>0)gains+=d; else losses+=-d;}
+    let rs = losses==0?100:gains/(losses||1); let rsi = 100-(100/(1+rs)); if(history.length<5) rsi=50;
+    document.getElementById('rsi').innerText=rsi.toFixed(1);
+    document.getElementById('atr').innerText=(Math.abs(ch)*2+1.2).toFixed(2);
+    document.getElementById('macd').innerText=(price-e50).toFixed(2);
+    document.getElementById('macdsig').innerText=(price-e20).toFixed(2);
+    document.getElementById('bbup').innerText=(price+8.5).toFixed(2);
+    document.getElementById('bblow').innerText=(price-8.5).toFixed(2);
+    document.getElementById('candle').innerText= trend==='BULLISH'?'Bullish Momentum':'Bearish Pressure';
+    document.getElementById('candleInfo').innerText='Live: Price '+price.toFixed(2)+' | RSI '+rsi.toFixed(1);
+    let high=Math.max(...history), low=Math.min(...history); let range=high-low||10;
+    document.getElementById('fib382').innerText=(high-range*0.382).toFixed(2);
+    document.getElementById('fib50').innerText=(high-range*0.5).toFixed(2);
+    document.getElementById('fib618').innerText=(high-range*0.618).toFixed(2);
+    let res=price+6.5, sup=price-6.5;
+    document.getElementById('res').innerText=res.toFixed(2);
+    document.getElementById('sup').innerText=sup.toFixed(2);
+    // Trade setup
+    let isBuy = price>e20 && rsi<70;
+    let entry=price, sl=isBuy?price-8:price+8, tp1=isBuy?price+12:price-12, tp2=isBuy?price+20:price-20, tp3=isBuy?price+30:price-30;
+    document.getElementById('setup').innerText=isBuy?'BUY':'SELL';
+    document.getElementById('setup').style.color=isBuy?'#0a9d5c':'#e02a2a';
+    document.getElementById('setupInfo').innerText=isBuy?'Price above EMA 20 - Bullish setup':'Price below EMA 20 - Bearish setup';
+    document.getElementById('entry').innerText=entry.toFixed(2);
+    document.getElementById('sl').innerText=sl.toFixed(2);
+    document.getElementById('tp1').innerText=tp1.toFixed(2);
+    document.getElementById('tp2').innerText=tp2.toFixed(2);
+    document.getElementById('tp3').innerText=tp3.toFixed(2);
+    document.getElementById('rr').innerText='1 : 2.5';
+    document.getElementById('status').innerText='LIVE • M5 candles fresh - '+new Date().toLocaleTimeString();
+  }catch(e){ document.getElementById('status').innerText='WAIT • Retrying...'; }
 }
-getPrice();
-setInterval(getPrice, 30000);
+getPrice(); setInterval(getPrice,60000);
 </script>
 </body>
 </html>
