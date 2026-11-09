@@ -6,9 +6,8 @@
 <title>SIMO GOLD AI</title>
 <style>
 body{background:#fff;font-family:Arial;text-align:center;padding:20px}
-h1{font-size:28px}
-.price{font-size:48px;font-weight:bold;color:#000;border:2px solid #d4af37;padding:20px;border-radius:15px}
-.live{color:green}
+.price{font-size:48px;font-weight:bold;border:2px solid #d4af37;padding:20px;border-radius:15px}
+.live{color:green;font-size:18px}
 </style>
 </head>
 <body>
@@ -20,23 +19,30 @@ h1{font-size:28px}
 <span style="font-size:14px" id="time">Connecting...</span>
 </div>
 <p id="status">Market Analysis: WAIT</p>
-
 <script>
 async function getPrice(){
   try{
-    let res = await fetch('https://data-asg.goldprice.org/dbXRates/USD');
-    let data = await res.json();
-    let price = data.items[0].curr;
-    // GoldPrice.org gives XAU in different format, we use 1 oz
-    document.getElementById('goldPrice').innerText = '$' + price;
+    // نجربو 2 مصادر، إلى واحد مسدود الآخر يخدم
+    let price = null;
+    try{
+      let r1 = await fetch('https://api.allorigins.win/raw?url=https://data-asg.goldprice.org/dbXRates/USD');
+      let d1 = await r1.json();
+      price = d1.items[0].curr;
+    }catch(e){}
+    if(!price){
+      let r2 = await fetch('https://api.allorigins.win/raw?url=https://api.gold-api.com/price/XAU');
+      let d2 = await r2.json();
+      price = d2.price;
+    }
+    document.getElementById('goldPrice').innerText = '$' + Number(price).toFixed(2);
     document.getElementById('time').innerText = 'Last update: ' + new Date().toLocaleTimeString();
-    document.getElementById('status').innerText = 'Market Analysis: Price Connected - LIVE';
+    document.getElementById('status').innerText = 'Market Analysis: LIVE - Connected';
   }catch(e){
     document.getElementById('goldPrice').innerText = 'Check Internet';
   }
 }
 getPrice();
-setInterval(getPrice, 60000);
+setInterval(getPrice, 30000);
 </script>
 </body>
 </html>
