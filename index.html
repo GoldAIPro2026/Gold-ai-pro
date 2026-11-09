@@ -1,76 +1,146 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#081426">
-<title>SIMO GOLD AI Signals</title>
+<title>SIMO GOLD AI</title>
 <style>
-:root{color-scheme:dark;--bg:#081426;--panel:#122944;--line:#294867;--gold:#e8c15b;--green:#25d69a;--red:#ff6474;--muted:#9bb0c6}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#edf4fb;font:15px Arial,sans-serif;padding:18px}
-main{max-width:760px;margin:auto}.brand{color:var(--gold);font-weight:800;letter-spacing:2px;font-size:22px}
-.sub{color:var(--muted);font-size:13px;margin:6px 0 18px}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
-.signal{font-size:34px;font-weight:800;margin:8px 0}.wait{color:var(--gold)}.buy{color:var(--green)}.sell{color:var(--red)}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.metric{background:#0b1d32;border-radius:10px;padding:12px}.metric small{display:block;color:var(--muted);margin-bottom:7px}
-button{background:var(--gold);border:0;border-radius:9px;padding:12px 16px;font-weight:700;color:#111;cursor:pointer}
-#status{color:var(--muted);font-size:13px}#details{line-height:1.7;color:#d8e5f1}
-.warning{font-size:12px;color:var(--muted);line-height:1.5}
-@media(min-width:560px){.grid{grid-template-columns:repeat(4,1fr)}}
-</style></head>
+*{box-sizing:border-box}body{margin:0;padding:18px;background:#081426;color:#edf4ff;font:15px Arial,sans-serif}
+main{max-width:760px;margin:auto}.brand{font-size:24px;font-weight:800;letter-spacing:1px;color:#e8c15b}
+.sub,.muted,small{color:#9eb2c8}.sub{font-size:13px;margin:6px 0 18px}
+.panel{background:#122944;border:1px solid #294867;border-radius:14px;padding:16px;margin:12px 0}
+.signal{font-size:34px;font-weight:800;margin:9px 0}.wait{color:#e8c15b}.buy{color:#25d69a}.sell{color:#ff6978}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.metric{background:#0b1d32;border-radius:10px;padding:12px;min-width:0}.metric small{display:block;margin-bottom:7px}.metric b{font-size:17px;overflow-wrap:anywhere}
+button{background:#e8c15b;color:#081426;border:0;border-radius:9px;padding:12px 16px;font-weight:700;margin:4px}
+#status{font-size:13px;color:#9eb2c8;line-height:1.5}#plan{line-height:1.8}
+.note{font-size:12px;line-height:1.6;color:#9eb2c8}
+@media(min-width:560px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+</head>
 <body><main>
-<div class="brand">SIMO GOLD AI</div><div class="sub">XAUUSD reference signals Â· Experimental Â· No auto trading</div>
+<div class="brand">SIMO GOLD AI</div>
+<div class="sub">Experimental gold-reference signals | No automatic trading</div>
 <section class="panel">
-<div id="status">Connecting to market dataâ¦</div>
+<div id="status">Connecting to market data...</div>
 <div id="signal" class="signal wait">WAIT</div>
 <div class="grid">
-<div class="metric"><small>Reference price</small><b id="price">â</b></div>
-<div class="metric"><small>Trend H4 / H1</small><b id="trend">â</b></div>
-<div class="metric"><small>RSI 14 (M5)</small><b id="rsi">â</b></div>
-<div class="metric"><small>ATR 14 (M5)</small><b id="atr">â</b></div>
-</div></section>
-<section class="panel"><b>Trade plan (if signal appears)</b><div id="details">Waiting for completed candlesâ¦</div></section>
+<div class="metric"><small>Gold reference</small><b id="price">--</b></div>
+<div class="metric"><small>H4 / H1 trend</small><b id="bigtrend">--</b></div>
+<div class="metric"><small>RSI 14 (M5)</small><b id="rsi">--</b></div>
+<div class="metric"><small>ATR 14 (M5)</small><b id="atr">--</b></div>
+</div>
+</section>
+<section class="panel"><b>Trade plan</b><div id="plan">Waiting for completed candles...</div></section>
 <button id="refresh">Refresh now</button>
-<section class="panel warning">Important: Data is sourced from Yahoo Finance GC=F futures, not your Exness XAUUSD feed. Price, spread and candles may differ or be delayed. This is a rules-based experimental indicator, not a proven AI system. Test on demo only. Keep this page open for updates; browser notifications may be restricted on iPhone.</section>
+<button id="notify">Enable alerts</button>
+<section class="panel note"><b>Important:</b> This version uses PAXGUSDT, a gold-backed token price on Binance, as a gold-market reference. It is NOT the exact Exness XAUUSD price. Price, spread and candles can differ. Signals are experimental rules, not proven AI and do not guarantee profits. Demo testing only. Keep the page open for alerts; iPhone may restrict browser notifications.</section>
 </main>
 <script>
-const $=id=>document.getElementById(id);
-const proxy=u=>'https://api.allorigins.win/raw?url='+encodeURIComponent(u);
-async function candles(interval,range){
- const url='https://query1.finance.yahoo.com/v8/finance/chart/GC%3DF?range='+range+'&interval='+interval;
- const r=await fetch(proxy(url)); if(!r.ok)throw Error('Data request failed');
- const j=await r.json(),res=j.contents?JSON.parse(j.contents):j;
- const x=res.chart.result[0],q=x.indicators.quote[0],out=[];
- for(let i=0;i<x.timestamp.length;i++){
-  const o=q.open[i],h=q.high[i],l=q.low[i],c=q.close[i];
-  if([o,h,l,c].every(Number.isFinite))out.push({t:x.timestamp[i]*1000,o,h,l,c});
+const el=id=>document.getElementById(id);
+const endpoints=['https://data-api.binance.vision/api/v3/klines','https://api.binance.com/api/v3/klines'];
+const frames=[['4h','H4'],['1h','H1'],['15m','M15'],['5m','M5']];
+let lastAlert='WAIT';
+async function loadFrame(interval){
+ let error;
+ for(const base of endpoints){
+  try{
+   const url=base+'?symbol=PAXGUSDT&interval='+interval+'&limit=500';
+   const response=await fetch(url,{cache:'no-store'});
+   if(!response.ok)throw new Error('HTTP '+response.status);
+   const rows=await response.json();
+   if(!Array.isArray(rows)||!rows.length)throw new Error('No candle data');
+   const ms={'4h':14400000,'1h':3600000,'15m':900000,'5m':300000}[interval];
+   const now=Date.now();
+   const out=rows.filter(r=>Number.isFinite(+r[1])&&Number.isFinite(+r[2])&&Number.isFinite(+r[3])&&Number.isFinite(+r[4])&&(+r[0]+ms<=now))
+    .map(r=>({t:+r[0],o:+r[1],h:+r[2],l:+r[3],c:+r[4]}));
+   if(out.length<210)throw new Error('Not enough completed candles');
+   return out;
+  }catch(e){error=e}
  }
+ throw error||new Error('Market data unavailable');
+}
+function ema(values,period){
+ const k=2/(period+1),out=[];let v=values[0];out.push(v);
+ for(let i=1;i<values.length;i++){v=values[i]*k+v*(1-k);out.push(v)}
  return out;
 }
-function ema(a,n){let k=2/(n+1),v=a[0];const out=[v];for(let i=1;i<a.length;i++){v=a[i]*k+v*(1-k);out.push(v)}return out}
-function rsi(a,n=14){if(a.length<n+1)return NaN;let g=0,l=0;for(let i=1;i<=n;i++){let d=a[i]-a[i-1];g+=Math.max(d,0);l+=Math.max(-d,0)}g/=n;l/=n;for(let i=n+1;i<a.length;i++){let d=a[i]-a[i-1];g=(g*(n-1)+Math.max(d,0))/n;l=(l*(n-1)+Math.max(-d,0))/n}return l===0?100:100-100/(1+g/l)}
-function atr(a,n=14){if(a.length<n+1)return NaN;let tr=[];for(let i=1;i<a.length;i++)tr.push(Math.max(a[i].h-a[i].l,Math.abs(a[i].h-a[i-1].c),Math.abs(a[i].l-a[i-1].c)));return tr.slice(-n).reduce((s,x)=>s+x,0)/n}
-function trend(a){let c=a.map(x=>x.c);if(c.length<205)return 'Insufficient data';let e20=ema(c,20).at(-1),e50=ema(c,50).at(-1),e200=ema(c,200).at(-1);return c.at(-1)>e20&&e20>e50&&e50>e200?'BUY':c.at(-1)<e20&&e20<e50&&e50<e200?'SELL':'MIXED'}
-function aggregate(a,mins){let groups=new Map();for(const x of a){let key=Math.floor(x.t/(mins*60000));if(!groups.has(key))groups.set(key,{t:key*mins*60000,o:x.o,h:x.h,l:x.l,c:x.c});else{let z=groups.get(key);z.h=Math.max(z.h,x.h);z.l=Math.min(z.l,x.l);z.c=x.c}}return [...groups.values()]}
-function completed(a,mins){let cutoff=Date.now()-mins*60000;return a.filter(x=>x.t+mins*60000<=cutoff)}
-async function refresh(){
- $('status').textContent='Loading fresh candlesâ¦';$('signal').textContent='WAIT';$('signal').className='signal wait';
- try{
-  const [h1raw,m5raw]=await Promise.all([candles('1h','6mo'),candles('5m','5d')]);
-  const h1=completed(h1raw,60),m5=completed(m5raw,5),h4=completed(aggregate(h1,240),240),m15=completed(aggregate(m5,15),15);
-  if(h4.length<205||h1.length<205||m15.length<205||m5.length<30)throw Error('Not enough completed candles yet');
-  const t4=trend(h4),t1=trend(h1),t15=trend(m15),t5=trend(m5);
-  const rr=rsi(m5.map(x=>x.c)),aa=atr(m5),last=m5.at(-1),prev=m5.at(-2);
-  let side='WAIT';
-  if(t4==='BUY'&&t1==='BUY'&&t15==='BUY'&&t5==='BUY'&&rr>=50&&rr<=68&&last.c>last.o&&last.c>prev.h)side='BUY';
-  if(t4==='SELL'&&t1==='SELL'&&t15==='SELL'&&t5==='SELL'&&rr>=32&&rr<50&&last.c<last.o&&last.c<prev.l)side='SELL';
-  $('signal').textContent=side;$('signal').className='signal '+(side==='BUY'?'buy':side==='SELL'?'sell':'wait');
-  $('price').textContent=last.c.toFixed(2);$('trend').textContent=t4+' / '+t1;
-  $('rsi').textContent=rr.toFixed(1);$('atr').textContent=aa.toFixed(2);
-  if(side==='WAIT')$('details').textContent='No confirmed setup. H4: '+t4+' Â· H1: '+t1+' Â· M15: '+t15+' Â· M5: '+t5+'. Wait; do not force a trade.';
-  else{let sl=side==='BUY'?last.c-1.5*aa:last.c+1.5*aa, risk=1.5*aa,tp1=side==='BUY'?last.c+risk:last.c-risk,tp2=side==='BUY'?last.c+2*risk:last.c-2*risk;
-   $('details').innerHTML='Direction: <b>'+side+'</b><br>Entry reference: '+last.c.toFixed(2)+'<br>Stop loss: '+sl.toFixed(2)+'<br>TP1 (1R): '+tp1.toFixed(2)+'<br>TP2 (2R): '+tp2.toFixed(2)+'<br><span class="warning">Check Exness price and spread before considering any demo trade.</span>'}
-  $('status').textContent='Updated: '+new Date().toLocaleString();
- }catch(e){$('status').textContent='Could not load reliable market data: '+e.message;$('details').textContent='Signal disabled until valid candle data loads. Check internet connection and try again.'}
+function rsi(values,period=14){
+ if(values.length<period+1)return NaN;
+ let gains=0,losses=0;
+ for(let i=1;i<=period;i++){const d=values[i]-values[i-1];gains+=Math.max(d,0);losses+=Math.max(-d,0)}
+ let ag=gains/period,al=losses/period;
+ for(let i=period+1;i<values.length;i++){const d=values[i]-values[i-1];ag=(ag*(period-1)+Math.max(d,0))/period;al=(al*(period-1)+Math.max(-d,0))/period}
+ return al===0?100:100-100/(1+ag/al);
 }
-$('refresh').addEventListener('click',refresh);refresh();setInterval(refresh,60000);
-</script></body></html>
+function atr(data,period=14){
+ const tr=[];
+ for(let i=1;i<data.length;i++)tr.push(Math.max(data[i].h-data[i].l,Math.abs(data[i].h-data[i-1].c),Math.abs(data[i].l-data[i-1].c)));
+ if(tr.length<period)return NaN;
+ let value=tr.slice(0,period).reduce((a,b)=>a+b,0)/period;
+ for(let i=period;i<tr.length;i++)value=(value*(period-1)+tr[i])/period;
+ return value;
+}
+function macdHistogram(values){
+ const f=ema(values,12),s=ema(values,26),line=f.map((v,i)=>v-s[i]).slice(25);
+ if(line.length<9)return NaN;
+ const sig=ema(line,9);
+ return line[line.length-1]-sig[sig.length-1];
+}
+function getTrend(data){
+ const closes=data.map(x=>x.c);
+ const e20=ema(closes,20).at(-1),e50=ema(closes,50).at(-1),e200=ema(closes,200).at(-1),last=closes.at(-1);
+ if(last>e20&&e20>e50&&e50>e200)return 'BUY';
+ if(last<e20&&e20<e50&&e50<e200)return 'SELL';
+ return 'MIXED';
+}
+async function refresh(){
+ el('status').textContent='Loading Binance gold-reference candles...';
+ el('signal').textContent='WAIT';el('signal').className='signal wait';
+ try{
+  const loaded=await Promise.all(frames.map(x=>loadFrame(x[0])));
+  const [h4,h1,m15,m5]=loaded;
+  const trends=loaded.map(getTrend),closes=m5.map(x=>x.c);
+  const r=rsi(closes),a=atr(m5),hist=macdHistogram(closes);
+  const last=m5.at(-1),previous=m5.at(-2);
+  let signal='WAIT',reason='Timeframes are not aligned or confirmation is missing.';
+  const alignedBuy=trends.every(x=>x==='BUY');
+  const alignedSell=trends.every(x=>x==='SELL');
+  if(alignedBuy&&r>=50&&r<=68&&hist>0&&last.c>last.o&&last.c>previous.h){
+   signal='BUY';reason='All four timeframes agree upward, with M5 momentum and candle confirmation.';
+  }else if(alignedSell&&r>=32&&r<50&&hist<0&&last.c<last.o&&last.c<previous.l){
+   signal='SELL';reason='All four timeframes agree downward, with M5 momentum and candle confirmation.';
+  }
+  el('signal').textContent=signal;el('signal').className='signal '+(signal==='BUY'?'buy':signal==='SELL'?'sell':'wait');
+  el('price').textContent=last.c.toFixed(2);
+  el('bigtrend').textContent=trends[0]+' / '+trends[1];
+  el('rsi').textContent=r.toFixed(1);el('atr').textContent=a.toFixed(2);
+  if(signal==='WAIT'){
+   el('plan').textContent=reason+' H4: '+trends[0]+' | H1: '+trends[1]+' | M15: '+trends[2]+' | M5: '+trends[3]+'. No trade.';
+  }else{
+   const distance=1.5*a,sl=signal==='BUY'?last.c-distance:last.c+distance;
+   const tp1=signal==='BUY'?last.c+distance:last.c-distance;
+   const tp2=signal==='BUY'?last.c+2*distance:last.c-2*distance;
+   el('plan').innerHTML='Signal: <b>'+signal+'</b><br>Reference entry: '+last.c.toFixed(2)+'<br>Stop loss estimate: '+sl.toFixed(2)+'<br>Take profit 1 (1R): '+tp1.toFixed(2)+'<br>Take profit 2 (2R): '+tp2.toFixed(2)+'<br><span class="note">Verify the live Exness XAUUSD price and spread yourself before any demo entry.</span>';
+  }
+  el('status').textContent='Data updated: '+new Date().toLocaleString()+' | Source: Binance PAXGUSDT';
+  if(signal!=='WAIT'&&signal!==lastAlert&&'Notification'in window&&Notification.permission==='granted'){
+   new Notification('SIMO GOLD AI: '+signal,{body:'Gold reference signal. Verify Exness price before trading.'});
+  }
+  lastAlert=signal;
+ }catch(error){
+  el('status').textContent='Market data error: '+error.message;
+  el('plan').textContent='No signal is generated because reliable candle data is unavailable. Check connection and tap Refresh now.';
+  el('price').textContent='--';el('bigtrend').textContent='--';el('rsi').textContent='--';el('atr').textContent='--';
+ }
+}
+el('refresh').addEventListener('click',refresh);
+el('notify').addEventListener('click',async()=>{
+ if(!('Notification'in window)){el('status').textContent='Notifications are not supported in this browser.';return}
+ const permission=await Notification.requestPermission();
+ el('status').textContent=permission==='granted'?'Alerts enabled while this page remains open.':'Notification permission was not granted.';
+});
+refresh();setInterval(refresh,60000);
+</script>
+</body></html>
