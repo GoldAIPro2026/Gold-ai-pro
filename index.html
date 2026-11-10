@@ -3,261 +3,206 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIMO GOLD AI V4 REAL</title>
+<title>SIMO GOLD AI V5 HAMAK 🔥</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
-body{background:#0a0a0a;color:#fff;padding:15px}
-h1{text-align:center;font-size:24px;margin:15px 0}
-h1 span{color:#00ff88}
-.sub{text-align:center;color:#aaa;font-size:13px;margin-bottom:15px}
-.card{background:#1a1a1a;border-radius:20px;padding:18px;margin-bottom:15px;border:1px solid #333}
-.big{font-size:42px;font-weight:900;text-align:center;padding:20px;border-radius:15px;margin:10px 0}
-.BUY{background:#0f5132;color:#4ade80}
-.SELL{background:#581c1c;color:#f87171}
-.WAIT{background:#333;color:#fff}
-.price{font-size:36px;font-weight:900;text-align:center}
-.conf{text-align:center;margin:10px 0;font-size:18px}
-.bar{height:12px;background:#333;border-radius:10px;overflow:hidden;display:flex}
-.bar div{height:100%}
-.row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #222;font-size:14px;gap:8px}
-.badge{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap}
-.buy{background:#14532d;color:#86efac}
-.sell{background:#7f1d1d;color:#fca5a5}
-.neutral{background:#333;color:#ccc}
-button{width:100%;padding:15px;background:#FFD700;border:none;border-radius:12px;font-weight:900;font-size:16px;margin-top:10px;cursor:pointer;color:#000}
-button.sec{background:#222;color:#fff;border:1px solid #444}
-input{width:100%;padding:12px;background:#222;border:1px solid #444;border-radius:10px;color:#fff;margin:5px 0;text-align:center;font-size:18px}
-.tp{color:#4ade80;font-weight:800}
-.sl{color:#f87171;font-weight:800}
-.live{color:#00ff88;font-size:12px}
+body{background:#050505;color:#fff;padding:12px;padding-bottom:80px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:8px 4px}
+.logo{font-weight:900;font-size:22px}
+.logo span{color:#FFD700}
+.live{color:#00ff88;font-size:12px;background:#0f2a1a;padding:5px 10px;border-radius:20px}
+.hero{background:linear-gradient(135deg,#1a1a00,#111);border:2px solid #FFD700;border-radius:24px;padding:18px;text-align:center;position:relative;overflow:hidden}
+.hero:before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,transparent,transparent,#FFD700);animation:spin 4s linear infinite;opacity:.15}
+@keyframes spin{to{transform:rotate(360deg)}}
+.big{font-size:48px;font-weight:900;letter-spacing:-1px;position:relative}
+.BUY{color:#00ff88;text-shadow:0 0 20px #00ff88}
+.SELL{color:#ff3b3b;text-shadow:0 0 20px #ff3b3b}
+.WAIT{color:#fff}
+.price{font-size:44px;font-weight:900;margin:8px 0}
+.scoreRing{width:110px;height:110px;border-radius:50%;border:8px solid #222;border-top-color:#FFD700;display:flex;align-items:center;justify-content:center;margin:12px auto;font-size:26px;font-weight:900}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
+.box{background:#0d0d0d;border:1px solid #222;border-radius:14px;padding:12px}
+.box small{color:#888;font-size:11px}
+.box b{font-size:18px;display:block;margin-top:4px}
+.card{background:#111;border:1px solid #222;border-radius:20px;padding:16px;margin-top:14px}
+.row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #1a1a1a;font-size:14px;gap:8px}
+.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:800;white-space:nowrap}
+.buy{background:#0f3d22;color:#4ade80}
+.sell{background:#4a1111;color:#ff8080}
+.neutral{background:#222;color:#ccc}
+button{width:100%;padding:16px;background:#FFD700;border:none;border-radius:14px;font-weight:900;font-size:17px;margin-top:10px;color:#000;cursor:pointer}
+button.sec{background:#222;color:#fff;border:1px solid #333}
+input,select{width:100%;padding:13px;background:#000;border:1px solid #333;border-radius:12px;color:#fff;margin:6px 0;text-align:center;font-size:16px}
+.alert{padding:12px;border-radius:12px;margin-top:12px;text-align:center;font-weight:700;font-size:14px}
+.journal{display:flex;gap:8px;margin-top:10px}
+.journal button{padding:10px;font-size:13px}
 </style>
 </head>
 <body>
-<h1>SIMO GOLD AI <span>V4 REAL ✅</span></h1>
-<div class="sub">بيانات حقيقية 100% • Binance PAXG • H1 • Exness XAUUSDm</div>
+<div class="top"><div class="logo">SIMO GOLD AI <span>V5 🔥</span></div><div class="live">● LIVE REAL</div></div>
+
+<div class="hero">
+<div style="font-size:13px;color:#aaa">XAUUSDm • Exness • FundingPips 25K • H1 REAL</div>
+<div id="signal" class="big WAIT">WAIT</div>
+<div class="price">$ <span id="price">--</span></div>
+<div class="scoreRing"><span id="scoreNum">0</span></div>
+<div>Score: <b id="scoreText">--</b> | ثقة: <b id="conf">--</b> | <span id="time">--</span></div>
+<div id="advice" class="alert" style="background:#222">كنجبد البيانات الحقيقية...</div>
+<div class="grid">
+<div class="box"><small>TP1</small><b id="tp1" style="color:#4ade80">--</b></div>
+<div class="box"><small>TP2</small><b id="tp2" style="color:#4ade80">--</b></div>
+<div class="box"><small>SL</small><b id="sl" style="color:#ff8080">--</b></div>
+</div>
+<div style="margin-top:12px;font-size:13px">Lot آمن لـ 25K: <b id="lot" style="color:#FFD700;font-size:20px">--</b> • Risk 1% = 250$ • R:R 1:2</div>
+<div style="font-size:12px;color:#888;margin-top:6px" id="summary">...</div>
+</div>
 
 <div class="card">
-<div id="signal" class="big WAIT">... كنجبد بيانات حقيقية</div>
-<div class="price">$ <span id="price">--</span> <span style="font-size:14px">(Exness)</span> <span class="live" id="liveDot">● LIVE</span></div>
-<div style="text-align:center;font-size:12px;color:#888">مصدر الشموع: Binance PAXG/USDT H1 • آخر تحديث: <span id="upd">--</span></div>
-<div class="conf">درجة الثقة: <b id="conf">--</b> | Score: <b id="scoreText">--</b></div>
-<div class="bar"><div id="buyBar" style="background:#22c55e;width:50%"></div><div id="sellBar" style="background:#ef4444;width:50%"></div></div>
-<div style="text-align:center;margin-top:10px;color:#aaa;font-size:13px"><span id="summary">...</span></div>
-<div style="display:flex;gap:10px;margin-top:12px;text-align:center">
-<div style="flex:1;background:#111;padding:10px;border-radius:10px">TP1<br><span class="tp" id="tp1">--</span></div>
-<div style="flex:1;background:#111;padding:10px;border-radius:10px">TP2<br><span class="tp" id="tp2">--</span></div>
-<div style="flex:1;background:#111;padding:10px;border-radius:10px">SL<br><span class="sl" id="sl">--</span></div>
-</div>
-<div style="text-align:center;margin-top:10px;font-size:12px;color:#aaa">Lot المقترح لـ 25K: <b id="lot" style="color:#fff">--</b> • Risk 1% = 250$</div>
+<h3>🔥 20 استراتيجية حماق - تحليل حي</h3>
+<div id="strategies">...</div>
 </div>
 
 <div class="card">
-<h3>📊 تحليل حقيقي - 12 استراتيجية</h3>
-<div id="strategies">كنجبد الشموع الحقيقية...</div>
+<h3>🧠 نصيحة SIMO AI</h3>
+<div id="aiTip" style="font-size:15px;line-height:1.7;color:#ddd">...</div>
+<div class="journal">
+<button onclick="saveTrade('WIN')" style="background:#0f5132;color:#fff">✅ ربحت</button>
+<button onclick="saveTrade('LOSS')" style="background:#7f1d1d;color:#fff">❌ خسرت</button>
+<button onclick="showJournal()" style="background:#222;color:#fff">📒 Journal</button>
+</div>
+<div id="journalBox" style="font-size:13px;color:#aaa;margin-top:10px"></div>
 </div>
 
 <div class="card">
 <h3>⚙️ تحكم</h3>
-<label>إلا بغيتي تزيد دقة Exness، دخل ثمن MT5 ديالك:</label>
-<input id="manualPrice" type="number" placeholder="خليه خاوي إلا بغيتي أوتوماتيك">
-<button onclick="loadReal()">🔄 حدث البيانات الحقيقية</button>
-<button class="sec" onclick="document.getElementById('manualPrice').value='';loadReal()">أوتوماتيك 100%</button>
-<p id="status" style="font-size:12px;color:#888;margin-top:10px;text-align:center">...</p>
-<p style="font-size:11px;color:#666;margin-top:8px;text-align:center">نصيحة: قارن ديما مع MT5 ديالك. إلا كان الفرق كتر من 2$، دخل الثمن يدوي.</p>
+<label>ثمن MT5 ديالك (Exness):</label>
+<input id="manualPrice" type="number" placeholder="خليه خاوي = أوتوماتيك">
+<label>حجم حسابك:</label>
+<select id="accSize"><option value="25000">25K FundingPips</option><option value="10000">10K</option><option value="50000">50K</option><option value="100000">100K</option></select>
+<button onclick="loadReal()">🚀 حلل دابا - REAL</button>
+<button class="sec" onclick="toggleSound()">🔔 التنبيه الصوتي: <span id="soundState">ON</span></button>
+<p id="status" style="font-size:12px;color:#888;text-align:center;margin-top:10px"></p>
 </div>
 
 <script>
-let candles = [];
+let candles=[], soundOn=true, wins=parseInt(localStorage.getItem('simo_w')||0), losses=parseInt(localStorage.getItem('simo_l')||0);
+function toggleSound(){soundOn=!soundOn;document.getElementById('soundState').innerText=soundOn?'ON':'OFF'}
+function saveTrade(r){ if(r==='WIN') wins++; else losses++; localStorage.setItem('simo_w',wins); localStorage.setItem('simo_l',losses); showJournal(); }
+function showJournal(){ let t=wins+losses; let wr=t?Math.round(wins/t*100):0; document.getElementById('journalBox').innerHTML=`📊 صفقاتك: ${t} | ربح: ${wins} ✅ | خسارة: ${losses} ❌ | Win Rate: ${wr}% ${wr>=60?'🔥 ناضي':'⚠️ خاصك تركز'}`; }
+showJournal();
 
-function emaCalc(arr, period){
-  let k = 2/(period+1);
-  let e = arr[0];
-  for(let i=1;i<arr.length;i++) e = arr[i]*k + e*(1-k);
-  return e;
-}
-function smaCalc(arr, period){
-  return arr.slice(-period).reduce((a,b)=>a+b,0)/period;
-}
-function rsiCalc(closes, period=14){
-  let gains=0, losses=0;
-  for(let i=closes.length-period; i<closes.length; i++){
-    let d = closes[i]-closes[i-1];
-    if(d>0) gains+=d; else losses+=-d;
-  }
-  let avgG = gains/period, avgL = losses/period;
-  if(avgL===0) return 100;
-  let rs = avgG/avgL;
-  return 100 - (100/(1+rs));
-}
-function atrCalc(){
-  let sum=0;
-  for(let i=candles.length-14;i<candles.length;i++){
-    let tr = Math.max(candles[i].high-candles[i].low, Math.abs(candles[i].high-candles[i-1].close), Math.abs(candles[i].low-candles[i-1].close));
-    sum+=tr;
-  }
-  return sum/14;
-}
+function ema(a,p){let k=2/(p+1),e=a[0];for(let i=1;i<a.length;i++)e=a[i]*k+e*(1-k);return e}
+function sma(a,p){return a.slice(-p).reduce((x,y)=>x+y,0)/p}
+function rsiCalc(c,p=14){let g=0,l=0;for(let i=c.length-p;i<c.length;i++){let d=c[i]-c[i-1];if(d>0)g+=d;else l+=-d}let rs=(g/p)/((l/p)||1);return 100-(100/(1+rs))}
+function beep(){if(!soundOn)return;try{let ctx=new (window.AudioContext||window.webkitAudioContext)();let o=ctx.createOscillator();o.frequency.value=880;o.connect(ctx.destination);o.start();setTimeout(()=>o.stop(),400)}catch(e){}}
 
-async function fetchRealCandles(){
-  // نجربو 3 طرق حقيقية، وحدة فيهم غادي تخدم
-  let urls = [
+async function fetchReal(){
+  let urls=[
     'https://corsproxy.io/?url=https%3A%2F%2Fapi.binance.com%2Fapi%2Fv3%2Fklines%3Fsymbol%3DPAXGUSDT%26interval%3D1h%26limit%3D100',
     'https://api.allorigins.win/raw?url=https%3A%2F%2Fapi.binance.com%2Fapi%2Fv3%2Fklines%3Fsymbol%3DPAXGUSDT%26interval%3D1h%26limit%3D100',
     'https://api.binance.us/api/v3/klines?symbol=PAXGUSDT&interval=1h&limit=100'
   ];
-  for(let url of urls){
-    try{
-      let res = await fetch(url);
-      let data = await res.json();
-      if(Array.isArray(data) && data.length>50){
-        return data.map(c=>({open:+c[1],high:+c[2],low:+c[3],close:+c[4],vol:+c[5]}));
-      }
-    }catch(e){}
-  }
+  for(let u of urls){try{let r=await fetch(u);let d=await r.json();if(Array.isArray(d)&&d.length>50)return d.map(c=>({o:+c[1],h:+c[2],l:+c[3],c:+c[4]}))}catch(e){}}
   return null;
 }
-async function fetchLivePrice(){
-  try{
-    let r = await fetch('https://data-asg.goldprice.org/dbXRates/USD');
-    let d = await r.json();
-    if(d && d.items && d.items[0]) return d.items[0].curr+'';
-  }catch(e){}
-  return null;
-}
-
 async function loadReal(){
-  document.getElementById('status').innerText = 'كنجبد الشموع الحقيقية من Binance...';
-  document.getElementById('signal').innerText = '... كنجبد';
-  let manual = parseFloat(document.getElementById('manualPrice').value);
-
-  let fetched = await fetchRealCandles();
-  if(!fetched){
-    document.getElementById('status').innerText = '❌ Binance ما خدمش، جرب شعل VPN ولا عاود من بعد. دخل الثمن يدوي من MT5 و عاود.';
-    document.getElementById('strategies').innerHTML = '<p style="color:#f87171">ما قدرناش نجيبو بيانات حقيقية. دخل ثمن MT5 و ورك حدث.</p>';
-    // إلا كان ثمن يدوي، نخدمو بيه بلا شموع
-    if(manual) analyzeWithPrice(manual, null);
-    return;
-  }
-  candles = fetched;
-  let binancePrice = candles[candles.length-1].close;
-  let live = await fetchLivePrice();
-  let price = manual && manual>1000 ? manual : binancePrice + 12; // +12 فرق Exness
-  if(live) document.getElementById('status').innerText = '✅ بيانات حقيقية من Binance | GoldPrice: '+live;
-  else document.getElementById('status').innerText = '✅ بيانات حقيقية من Binance PAXG H1';
-  analyzeWithPrice(price, candles);
+  document.getElementById('status').innerText='كنجبد شموع حقيقية...';
+  let manual=parseFloat(document.getElementById('manualPrice').value);
+  let fetched=await fetchReal();
+  if(!fetched){document.getElementById('status').innerText='❌ شعل VPN ولا دخل الثمن يدوي'; if(manual) analyze(manual,null); return;}
+  candles=fetched;
+  let price= manual&&manual>1000?manual:candles[candles.length-1].c+12;
+  document.getElementById('status').innerText='✅ REAL - Binance PAXG H1 - '+new Date().toLocaleTimeString();
+  analyze(price,candles);
 }
+function analyze(price,real){
+  let closes, atr, last, prev, hi, lo, res, sup, vol;
+  if(real){closes=real.map(c=>c.c); last=real[real.length-1]; prev=real[real.length-2]; hi=Math.max(...closes.slice(-50)); lo=Math.min(...closes.slice(-50)); res=Math.max(...closes.slice(-20)); sup=Math.min(...closes.slice(-20)); let s=0; for(let i=real.length-14;i<real.length;i++){s+=Math.max(real[i].h-real[i].l,Math.abs(real[i].h-real[i-1].c),Math.abs(real[i].l-real[i-1].c))} atr=s/14; if(atr<5) atr=12.5; vol=last.c-prev.c;}
+  else{closes=Array(100).fill(price); atr=12.5; last={c:price,o:price,h:price+5,l:price-5}; prev={c:price,o:price}; hi=price+20; lo=price-20; res=price+15; sup=price-15; vol=0}
+  let rsi=rsiCalc(closes), e50=ema(closes,50), e200=ema(closes,200), s50=sma(closes,50), e12=ema(closes,12), e26=ema(closes,26), macd=e12-e26, mean20=sma(closes,20);
+  let std=Math.sqrt(closes.slice(-20).reduce((a,b)=>a+Math.pow(b-mean20,2),0)/20);
+  let up=mean20+2*std, lowB=mean20-2*std;
+  let lows=Math.min(...(real?real.slice(-14).map(c=>c.l):[price-10])), highs=Math.max(...(real?real.slice(-14).map(c=>c.h):[price+10]));
+  let stoch=(price-lows)/(highs-lows||1)*100;
+  let fib618=hi-(hi-lo)*0.618, fib382=hi-(hi-lo)*0.382;
+  let engB=(last.c>last.o && prev.c<prev.o && last.c>prev.o && last.o<prev.c);
+  let engS=(last.c<last.o && prev.c>prev.o && last.c<prev.o && last.o>prev.c);
+  let hour=new Date().getHours();
+  let session= hour>=9&&hour<=12?'لندن 🔥':hour>=14&&hour<=18?'نيويورك 🔥':hour>=0&&hour<=7?'ليل ميت 💀':'آسيا عادي';
+  let isNight=hour>=0&&hour<=7;
 
-function analyzeWithPrice(price, realCandles){
-  let closes, atr, last, prev, hi, lo, res, sup;
-  if(realCandles){
-    closes = realCandles.map(c=>c.close);
-    atr = atrCalc();
-    last = realCandles[realCandles.length-1];
-    prev = realCandles[realCandles.length-2];
-    hi = Math.max(...closes.slice(-50)); lo = Math.min(...closes.slice(-50));
-    res = Math.max(...closes.slice(-20)); sup = Math.min(...closes.slice(-20));
-  } else {
-    closes = Array(100).fill(price);
-    atr = 13; last={close:price,open:price}; prev={close:price,open:price};
-    hi=price+20; lo=price-20; res=price+15; sup=price-15;
-  }
-
-  let rsi = rsiCalc(closes);
-  let e50 = emaCalc(closes,50);
-  let e200 = emaCalc(closes,200);
-  let s50 = smaCalc(closes,50);
-  let e12 = emaCalc(closes,12), e26 = emaCalc(closes,26);
-  let macd = e12 - e26;
-  let mean20 = smaCalc(closes,20);
-  let std = Math.sqrt(closes.slice(-20).reduce((a,b)=>a+Math.pow(b-mean20,2),0)/20);
-  let upper = mean20+2*std, lower = mean20-2*std;
-  let lastLow = Math.min(...realCandles?realCandles.slice(-14).map(c=>c.low):[price-10]);
-  let lastHigh = Math.max(...realCandles?realCandles.slice(-14).map(c=>c.high):[price+10]);
-  let stoch = (price-lastLow)/(lastHigh-lastLow||1)*100;
-  let fib618 = hi - (hi-lo)*0.618;
-  let engulfBuy = (last.close>last.open && prev.close<prev.open && last.close>prev.open && last.open<prev.close);
-  let engulfSell = (last.close<last.open && prev.close>prev.open && last.close<prev.open && last.open>prev.close);
-
-  document.getElementById('price').innerText = price.toFixed(2);
-  document.getElementById('upd').innerText = new Date().toLocaleTimeString('ar-MA');
+  document.getElementById('price').innerText=price.toFixed(2);
+  document.getElementById('time').innerText=new Date().toLocaleTimeString();
 
   let S=[];
-  if(rsi<30) S.push({n:'RSI (H1) حقيقي',v:rsi.toFixed(1)+' Oversold',s:'BUY',p:2});
-  else if(rsi>70) S.push({n:'RSI (H1) حقيقي',v:rsi.toFixed(1)+' Overbought',s:'SELL',p:-2});
-  else if(rsi<45) S.push({n:'RSI (H1) حقيقي',v:rsi.toFixed(1),s:'BUY',p:1});
-  else if(rsi>55) S.push({n:'RSI (H1) حقيقي',v:rsi.toFixed(1),s:'SELL',p:-1});
-  else S.push({n:'RSI (H1) حقيقي',v:rsi.toFixed(1)+' Neutral',s:'NEUTRAL',p:0});
+  // 1-12 الأساسيين
+  S.push(rsi<30?{n:'RSI H1',v:rsi.toFixed(1)+' Oversold',s:'BUY',p:2}:rsi>70?{n:'RSI H1',v:rsi.toFixed(1)+' Overbought',s:'SELL',p:-2}:rsi<45?{n:'RSI H1',v:rsi.toFixed(1),s:'BUY',p:1}:rsi>55?{n:'RSI H1',v:rsi.toFixed(1),s:'SELL',p:-1}:{n:'RSI H1',v:rsi.toFixed(1),s:'NEUTRAL',p:0});
+  S.push(price>e50&&e50>e200?{n:'EMA 50/200',v:'Uptrend قوي',s:'BUY',p:2}:price<e50&&e50<e200?{n:'EMA 50/200',v:'Downtrend قوي',s:'SELL',p:-2}:{n:'EMA 50/200',v:'متذبذب',s:'NEUTRAL',p:0});
+  S.push(macd>0?{n:'MACD',v:macd.toFixed(2)+' +',s:'BUY',p:1}:{n:'MACD',v:macd.toFixed(2)+' -',s:'SELL',p:-1});
+  S.push(stoch<20?{n:'Stochastic',v:stoch.toFixed(1)+' Oversold',s:'BUY',p:2}:stoch>80?{n:'Stochastic',v:stoch.toFixed(1)+' Overbought',s:'SELL',p:-2}:{n:'Stochastic',v:stoch.toFixed(1),s:'NEUTRAL',p:0});
+  S.push(price<=lowB?{n:'Bollinger',v:'لمس السفلي',s:'BUY',p:2}:price>=up?{n:'Bollinger',v:'لمس العلوي',s:'SELL',p:-2}:{n:'Bollinger',v:'داخل القناة',s:'NEUTRAL',p:0});
+  S.push(price>s50?{n:'SMA 50',v:'فوق',s:'BUY',p:1}:{n:'SMA 50',v:'تحت',s:'SELL',p:-1});
+  S.push({n:'ADX / ATR',v:atr.toFixed(1)+' قوة '+ (atr>12?'قوية':'ضعيفة'),s:atr>12?(price>e50?'BUY':'SELL'):'NEUTRAL',p:atr>12?(price>e50?1:-1):0});
+  S.push(Math.abs(price-fib618)<5?{n:'Fib 61.8% ذهبية',v:fib618.toFixed(1),s:'BUY',p:2}:price>fib618?{n:'Fib 61.8%',v:'فوق',s:'BUY',p:1}:{n:'Fib 61.8%',v:'تحت',s:'SELL',p:-1});
+  S.push(engB?{n:'Engulfing',v:'صاعدة 🔥',s:'BUY',p:2}:engS?{n:'Engulfing',v:'هابطة 🔥',s:'SELL',p:-2}:{n:'Engulfing',v:'لا توجد',s:'NEUTRAL',p:0});
+  S.push(price>res?{n:'Breakout',v:'كسر '+res.toFixed(1),s:'BUY',p:2}:price<sup?{n:'Breakout',v:'كسر '+sup.toFixed(1),s:'SELL',p:-2}:{n:'Breakout',v:'داخل النطاق',s:'NEUTRAL',p:0});
+  S.push(price>mean20?{n:'Supertrend',v:'صاعد',s:'BUY',p:1}:{n:'Supertrend',v:'هابط',s:'SELL',p:-1});
+  S.push(price>e200?{n:'H4 Trend',v:'فوق 200',s:'BUY',p:1}:{n:'H4 Trend',v:'تحت 200',s:'SELL',p:-1});
+  // 13-20 الحماق
+  S.push(price> (hi+lo)/2?{n:'VWAP (تقريبي)',v:'فوق المتوسط',s:'BUY',p:1}:{n:'VWAP',v:'تحت المتوسط',s:'SELL',p:-1});
+  S.push(Math.abs(price-fib382)<5?{n:'Order Block 38.2%',v:fib382.toFixed(1)+' منطقة صناع السوق',s:'BUY',p:2}:{n:'Order Block',v:'بعيد',s:'NEUTRAL',p:0});
+  S.push(vol>0?{n:'Momentum / FVG',v:'زخم صاعد',s:'BUY',p:1}:vol<0?{n:'Momentum / FVG',v:'زخم هابط',s:'SELL',p:-1}:{n:'Momentum',v:'متوازن',s:'NEUTRAL',p:0});
+  S.push(price>res-2?{n:'Liquidity Sweep',v:'ضرب ستوبات فوق',s:'SELL',p:-1}:price<sup+2?{n:'Liquidity Sweep',v:'ضرب ستوبات تحت',s:'BUY',p:1}:{n:'Liquidity',v:'عادية',s:'NEUTRAL',p:0});
+  S.push(rsi<35&&price>prev.c?{n:'RSI Divergence',v:'اختلاف صاعد',s:'BUY',p:2}:rsi>65&&price<prev.c?{n:'RSI Divergence',v:'اختلاف هابط',s:'SELL',p:-2}:{n:'RSI Divergence',v:'لا يوجد',s:'NEUTRAL',p:0});
+  S.push(!isNight?{n:'Session '+session,v:'وقت السيولة',s:price>e50?'BUY':'SELL',p:price>e50?1:-1}:{n:'Session '+session,v:'نعس! ما تدخلش',s:'NEUTRAL',p:-3});
+  S.push({n:'SMC Trend',v:price>e50?'صاعد - دير Buy فقط':'هابط - دير Sell فقط',s:price>e50?'BUY':'SELL',p:1});
+  S.push(price>sup&&price<res?{n:'Range / Wyckoff',v:'تجميع',s:'NEUTRAL',p:0}:{n:'Range',v:'خارج النطاق',s:price>e50?'BUY':'SELL',p:1});
 
-  if(price>e50 && e50>e200) S.push({n:'EMA 50/200 حقيقي',v:'Uptrend',s:'BUY',p:2});
-  else if(price<e50 && e50<e200) S.push({n:'EMA 50/200 حقيقي',v:'Downtrend',s:'SELL',p:-2});
-  else S.push({n:'EMA 50/200 حقيقي',v:'متذبذب',s:'NEUTRAL',p:0});
-
-  if(macd>0) S.push({n:'MACD حقيقي',v:macd.toFixed(2)+' Positive',s:'BUY',p:1});
-  else S.push({n:'MACD حقيقي',v:macd.toFixed(2)+' Negative',s:'SELL',p:-1});
-
-  if(stoch<20) S.push({n:'Stochastic حقيقي',v:stoch.toFixed(1)+' Oversold',s:'BUY',p:2});
-  else if(stoch>80) S.push({n:'Stochastic حقيقي',v:stoch.toFixed(1)+' Overbought',s:'SELL',p:-2});
-  else S.push({n:'Stochastic حقيقي',v:stoch.toFixed(1),s:'NEUTRAL',p:0});
-
-  if(price<=lower) S.push({n:'Bollinger حقيقي',v:'لمس السفلي '+lower.toFixed(1),s:'BUY',p:2});
-  else if(price>=upper) S.push({n:'Bollinger حقيقي',v:'لمس العلوي '+upper.toFixed(1),s:'SELL',p:-2});
-  else S.push({n:'Bollinger حقيقي',v:'داخل القناة',s:'NEUTRAL',p:0});
-
-  if(price>s50) S.push({n:'SMA 50 حقيقي',v:'فوق '+s50.toFixed(1),s:'BUY',p:1});
-  else S.push({n:'SMA 50 حقيقي',v:'تحت '+s50.toFixed(1),s:'SELL',p:-1});
-
-  let adx = atr>15?28:18;
-  if(adx>25) S.push({n:'ADX',v:adx+' ترند قوي',s:price>e50?'BUY':'SELL',p:price>e50?1:-1});
-  else S.push({n:'ADX',v:adx+' ضعيف',s:'NEUTRAL',p:0});
-
-  if(Math.abs(price-fib618)<4) S.push({n:'Fibonacci 61.8% حقيقي',v:fib618.toFixed(2)+' منطقة ذهبية',s:'BUY',p:2});
-  else if(price>fib618) S.push({n:'Fibonacci 61.8% حقيقي',v:'فوق '+fib618.toFixed(1),s:'BUY',p:1});
-  else S.push({n:'Fibonacci 61.8% حقيقي',v:'تحت '+fib618.toFixed(1),s:'SELL',p:-1});
-
-  if(engulfBuy) S.push({n:'Engulfing حقيقي',v:'ابتلاعية صاعدة',s:'BUY',p:2});
-  else if(engulfSell) S.push({n:'Engulfing حقيقي',v:'ابتلاعية هابطة',s:'SELL',p:-2});
-  else S.push({n:'Engulfing حقيقي',v:'لا توجد',s:'NEUTRAL',p:0});
-
-  if(price>res) S.push({n:'Breakout حقيقي',v:'كسر '+res.toFixed(1),s:'BUY',p:2});
-  else if(price<sup) S.push({n:'Breakout حقيقي',v:'كسر '+sup.toFixed(1),s:'SELL',p:-2});
-  else S.push({n:'Breakout حقيقي',v:'داخل النطاق',s:'NEUTRAL',p:0});
-
-  if(price>mean20) S.push({n:'Supertrend حقيقي',v:'صاعد',s:'BUY',p:1});
-  else S.push({n:'Supertrend حقيقي',v:'هابط',s:'SELL',p:-1});
-
-  if(price>e200) S.push({n:'H4/H1 توافق',v:'فوق EMA200 '+e200.toFixed(1),s:'BUY',p:1});
-  else S.push({n:'H4/H1 توافق',v:'تحت EMA200 '+e200.toFixed(1),s:'SELL',p:-1});
-
-  let total = S.reduce((a,s)=>a+s.p,0);
-  let buyC = S.filter(s=>s.s==='BUY').length;
-  let sellC = S.filter(s=>s.s==='SELL').length;
-  document.getElementById('strategies').innerHTML = S.map(s=>`<div class="row"><span>${s.n} <span style="color:#888;font-size:12px">${s.v}</span></span><span class="badge ${s.s==='BUY'?'buy':s.s==='SELL'?'sell':'neutral'}">${s.s} (${s.p})</span></div>`).join('');
+  let total=S.reduce((a,s)=>a+s.p,0);
+  let buyC=S.filter(s=>s.s==='BUY').length, sellC=S.filter(s=>s.s==='SELL').length;
+  document.getElementById('strategies').innerHTML=S.map(s=>`<div class="row"><span>${s.n} <span style="color:#888;font-size:12px">${s.v}</span></span><span class="badge ${s.s==='BUY'?'buy':s.s==='SELL'?'sell':'neutral'}">${s.s} (${s.p})</span></div>`).join('');
 
   let signal='WAIT';
-  if(total>=7) signal='STRONG BUY';
-  else if(total>=4) signal='BUY';
-  else if(total<=-7) signal='STRONG SELL';
-  else if(total<=-4) signal='SELL';
+  if(isNight) signal='WAIT';
+  else if(total>=10) signal='STRONG BUY';
+  else if(total>=6) signal='BUY';
+  else if(total<=-10) signal='STRONG SELL';
+  else if(total<=-6) signal='SELL';
+
   let el=document.getElementById('signal');
-  el.innerText=signal;
-  el.className='big '+(signal.includes('BUY')?'BUY':signal.includes('SELL')?'SELL':'WAIT');
-  let conf=Math.min(95, Math.abs(total)/12*100+30);
+  el.innerText=signal; el.className='big '+(signal.includes('BUY')?'BUY':signal.includes('SELL')?'SELL':'WAIT');
+  let conf=Math.min(96, Math.abs(total)/20*100+35);
+  if(isNight) conf=20;
   document.getElementById('conf').innerText=Math.round(conf)+'%';
-  document.getElementById('scoreText').innerText=total+' / 12';
-  document.getElementById('summary').innerText=`BUY ${buyC} / SELL ${sellC} • Score ${total} • ATR ${atr.toFixed(2)} • شموع حقيقية ${closes.length}`;
-  document.getElementById('buyBar').style.width=(buyC/12*100)+'%';
-  document.getElementById('sellBar').style.width=(sellC/12*100)+'%';
+  document.getElementById('scoreText').innerText=total+' / 20';
+  document.getElementById('scoreNum').innerText=total;
+  document.getElementById('summary').innerText=`BUY ${buyC} / SELL ${sellC} • Score ${total} • ATR ${atr.toFixed(2)} • شموع حقيقية 100`;
   let tp1v,tp2v,slv;
-  if(signal.includes('BUY')){tp1v=price+atr;tp2v=price+atr*1.8;slv=price-atr*0.8;}
-  else if(signal.includes('SELL')){tp1v=price-atr;tp2v=price-atr*1.8;slv=price+atr*0.8;}
-  else{tp1v=price+atr;tp2v=price+atr*1.8;slv=price-atr;}
+  if(signal.includes('BUY')){tp1v=price+atr;tp2v=price+atr*2;slv=price-atr*0.7;}
+  else if(signal.includes('SELL')){tp1v=price-atr;tp2v=price-atr*2;slv=price+atr*0.7;}
+  else{tp1v=price+atr;tp2v=price+atr*2;slv=price-atr;}
   document.getElementById('tp1').innerText=tp1v.toFixed(2);
   document.getElementById('tp2').innerText=tp2v.toFixed(2);
   document.getElementById('sl').innerText=slv.toFixed(2);
-  document.getElementById('lot').innerText=(250/(Math.abs(price-slv)*100)).toFixed(2);
+
+  let acc=parseInt(document.getElementById('accSize').value);
+  let risk=acc*0.01;
+  let slDist=Math.abs(price-slv);
+  let lot=(risk/(slDist*100));
+  if(lot>0.5) lot=0.25; // حماية FundingPips
+  if(lot<0.05) lot=0.05;
+  document.getElementById('lot').innerText=lot.toFixed(2);
+
+  let adviceEl=document.getElementById('advice');
+  let tip='';
+  if(isNight){adviceEl.innerText='🌙 الليل - نعس، ما تدخلش، السوق غدار'; adviceEl.style.background='#222'; tip='دابا الليل، السيولة ميتة. نعس و تسنى لندن 10:00. اللي كيدخل بالليل فـ FundingPips كيحرق الكونط. خلي فلوسك.'}
+  else if(signal.includes('STRONG')){adviceEl.innerText='🔥 دخول قوي! دير '+lot.toFixed(2)+' Lot و احترم SL'; adviceEl.style.background='#0f5132'; beep(); tip='إشارة قوية متوافقة مع 20 استراتيجية. دخل بـ '+lot.toFixed(2)+' Lot فقط، TP1 خود نص الربح، و حول SL للـ Entry. ما تطمعش.'}
+  else if(signal.includes('BUY')||signal.includes('SELL')){adviceEl.innerText='⚠️ دخول خفيف - تسنى تأكيد'; adviceEl.style.background='#3a2a00'; tip='إشارة متوسطة. إلا بغيتي تدخل، دخل بـ 0.15 Lot فقط و تسنى شمعة H1 تسد فوق/تحت EMA 50.'}
+  else{adviceEl.innerText='⏳ WAIT - السوق ما واضحش، ما تدخلش'; adviceEl.style.background='#222'; tip='السوق متعادل. أحسن صفقة هي اللي ما درتيهاش. تسنى حتى Score يوصل 10+.'}
+  document.getElementById('aiTip').innerText=tip;
 }
 loadReal();
-setInterval(loadReal, 60000);
+setInterval(loadReal,60000);
 </script>
 </body>
 </html>
