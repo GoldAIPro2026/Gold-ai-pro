@@ -193,4 +193,56 @@ async function analyze(){
   if(price > mean) strategies.push({name:'Supertrend', val:'صاعد', sig:'BUY', score:1});
   else strategies.push({name:'Supertrend', val:'هابط', sig:'SELL', score:-1});
 
-  // 12 - H4 / H1 توافق - كنستعمل
+  // 12 - H4 / H1 توافق - كنستعملو EMA
+  if(price > e200) strategies.push({name:'H4/H1 توافق', val:'فوق EMA 200', sig:'BUY', score:1});
+  else strategies.push({name:'H4/H1 توافق', val:'تحت EMA 200', sig:'SELL', score:-1});
+
+  let totalScore = strategies.reduce((a,s)=>a+s.score,0);
+  let buyCount = strategies.filter(s=>s.sig==='BUY').length;
+  let sellCount = strategies.filter(s=>s.sig==='SELL').length;
+
+  // عرض الاستراتيجيات
+  document.getElementById('strategies').innerHTML = strategies.map(s=>`
+    <div class="row"><span>${s.name} <span style="color:#888;font-size:12px">${s.val}</span></span><span class="badge ${s.sig==='BUY'?'buy':s.sig==='SELL'?'sell':'neutral'}">${s.sig} (${s.score})</span></div>
+  `).join('');
+
+  // القرار النهائي
+  let signalEl = document.getElementById('signal');
+  let conf = Math.min(95, Math.abs(totalScore)/12*100 + 30);
+  let signal = 'WAIT';
+  if(totalScore >= 7) signal='STRONG BUY';
+  else if(totalScore >= 4) signal='BUY';
+  else if(totalScore <= -7) signal='STRONG SELL';
+  else if(totalScore <= -4) signal='SELL';
+
+  signalEl.innerText = signal;
+  signalEl.className = 'big ' + (signal.includes('BUY')?'BUY':signal.includes('SELL')?'SELL':'WAIT');
+  document.getElementById('conf').innerText = Math.round(conf)+'%';
+  document.getElementById('scoreText').innerText = totalScore+' / 12';
+  document.getElementById('summary').innerText = `BUY ${buyCount} / SELL ${sellCount} • Score ${totalScore} • ATR ${atr.toFixed(2)}`;
+  document.getElementById('buyBar').style.width = (buyCount/12*100)+'%';
+  document.getElementById('sellBar').style.width = (sellCount/12*100)+'%';
+
+  // TP / SL من ATR
+  let tp1v, tp2v, slv;
+  if(signal.includes('BUY')){
+    tp1v = price + atr*1.0; tp2v = price + atr*1.8; slv = price - atr*0.8;
+  } else if(signal.includes('SELL')){
+    tp1v = price - atr*1.0; tp2v = price - atr*1.8; slv = price + atr*0.8;
+  } else { tp1v=price+atr; tp2v=price+atr*1.8; slv=price-atr; }
+  document.getElementById('tp1').innerText = tp1v.toFixed(2);
+  document.getElementById('tp2').innerText = tp2v.toFixed(2);
+  document.getElementById('sl').innerText = slv.toFixed(2);
+
+  // Lot على حسب ATR باش الريسك يبقا 1%
+  let risk = 250; // 1% ديال 25K
+  let slDistance = Math.abs(price - slv);
+  let lot = (risk / (slDistance*100)).toFixed(2);
+  document.getElementById('lot').innerText = lot;
+}
+function useBinance(){ document.getElementById('manualPrice').value=''; analyze(); }
+analyze();
+setInterval(analyze, 30000);
+</script>
+</body>
+</html>
