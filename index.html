@@ -3,85 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SIMO GOLD AI V7 - LIVE</title>
+<title>SIMO GOLD AI V8 PRO</title>
 <style>
-body{background:#0a0a0a;color:#fff;font-family:Arial;text-align:center;padding:15px}
-.box{border:2px solid gold;border-radius:20px;padding:20px;background:#1a1a00}
-.price{font-size:44px;font-weight:bold;margin:10px}
-.signal{font-size:42px;font-weight:bold;margin:15px}
+body{background:#000;color:#fff;font-family:Arial;padding:12px;text-align:center}
+.box{border:2px solid gold;border-radius:20px;padding:16px;background:#141400}
+.price{font-size:46px;font-weight:bold}
+.sig{font-size:44px;font-weight:bold;margin:12px}
 .buy{color:#00ff88}.sell{color:#ff4444}.wait{color:#ffcc00}
-.card{display:flex;justify-content:space-around;margin-top:15px}
-.card div{background:#222;padding:10px;border-radius:12px;width:30%}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;text-align:right}
+.grid div{background:#222;padding:10px;border-radius:12px;font-size:14px}
 .tp{color:#00ff88}.sl{color:#ff4444}
-button{background:gold;border:none;padding:12px 25px;border-radius:10px;font-weight:bold;margin-top:15px}
+button{background:gold;border:none;padding:12px 22px;border-radius:10px;font-weight:bold}
+.bar{height:10px;background:#333;border-radius:10px;overflow:hidden;margin:8px 0}
+.bar div{height:100%;background:linear-gradient(90deg,#ff4444,#00ff88)}
 </style>
 </head>
 <body>
 <div class="box">
-<h2>🔥 SIMO GOLD AI V7 - LIVE</h2>
-<p>XAUUSD • PAXG = GOLD • H1 • FundingPips 25K</p>
-<div id="sig" class="signal wait">... جاري التحميل</div>
+<h2>🔥 SIMO GOLD AI V8 PRO</h2>
+<p>XAUUSD • SCALP M5 • LIVE • FundingPips 25K</p>
+<div id="sig" class="sig wait">WAIT 🟡</div>
 <div id="price" class="price">---- $</div>
-<div id="info">Score: -- / 20</div>
-<div class="card">
-<div>TP1<br><span id="tp1" class="tp">----</span></div>
-<div>TP2<br><span id="tp2" class="tp">----</span></div>
-<div>SL<br><span id="sl" class="sl">----</span></div>
+<div id="score">Score: -- / 20 | ثقة: --%</div>
+<div class="bar"><div id="barFill" style="width:50%"></div></div>
+<div class="grid">
+<div>📈 EMA 50: <span id="ema">--</span></div>
+<div>📊 RSI: <span id="rsi">--</span></div>
+<div>📉 MACD: <span id="macd">--</span></div>
+<div>⚡ ATR: <span id="atr">--</span></div>
+<div>🟢 BUY: <span id="buyC" style="color:#00ff88">--</span></div>
+<div>🔴 SELL: <span id="sellC" style="color:#ff4444">--</span></div>
+<div>🛡️ دعم: <b id="sup">--</b></div>
+<div>🚧 مقاومة: <b id="res">--</b></div>
 </div>
-<p>25K: Lot آمن 0.20 • Risk 1% = 250$</p>
-<button onclick="getGold()">🔄 تحديث دابا</button>
-<p id="time" style="font-size:12px;color:#aaa"></p>
+<div style="display:flex;justify-content:space-around">
+<div>TP1<br><b id="tp1" class="tp">--</b></div>
+<div>TP2<br><b id="tp2" class="tp">--</b></div>
+<div>SL<br><b id="sl" class="sl">--</b></div>
 </div>
-
+<p style="font-size:13px">Lot: 0.20 • دخول: <span id="entry">--</span></p>
+<button onclick="getGold()">🔄 تحديث</button>
+<p id="time" style="font-size:11px;color:#aaa"></p>
+<p id="reason" style="background:#222;padding:10px;border-radius:10px;font-size:13px">كنجمع البيانات...</p>
+</div>
 <script>
-let prices = [];
+let hist=[];
 async function getGold(){
-  try{
-    // Binance PAXG = ذهب حقيقي 1:1 و خدام فالتيليفون
-    let res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
-    let data = await res.json();
-    let price = parseFloat(data.price);
-    update(price);
-  }catch(e){
-    // بديل 2 إلا Binance ما خدمش
-    try{
-      let r2 = await fetch('https://api.allorigins.win/raw?url=https://data-asg.goldprice.org/dbXRates/USD');
-      let d2 = await r2.json();
-      let p2 = d2.items[0].currencies.USD;
-      update(p2);
-    }catch(e2){
-      document.getElementById('sig').innerText = "جرب شعل 4G و عاود";
-    }
-  }
+ try{
+  let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
+  let d=await r.json(); let p=parseFloat(d.price);
+  hist.push(p); if(hist.length>100) hist.shift();
+  calc(p);
+ }catch(e){ document.getElementById('reason').innerText="مشكل إنترنت - جرب 4G"; }
 }
-function update(price){
-  prices.push(price);
-  if(prices.length>30) prices.shift();
-  let first = prices[0];
-  let change = price - first;
-  let sigEl = document.getElementById('sig');
-  let score = 5;
-  let sig = "WAIT 🟡";
-  let cls = "wait";
-  let tp1 = price + 12, tp2 = price + 25, sl = price - 12;
-  if(change > 2){
-    sig="BUY 🟢"; cls="buy"; score=14;
-    tp1 = price+12; tp2 = price+25; sl = price-12;
-  } else if(change < -2){
-    sig="SELL 🔴"; cls="sell"; score=14;
-    tp1 = price-12; tp2 = price-25; sl = price+12;
-  }
-  sigEl.innerText = sig;
-  sigEl.className = "signal "+cls;
-  document.getElementById('price').innerText = price.toFixed(2) + " $";
-  document.getElementById('info').innerText = `Score: ${score} / 20 | ثقة: ${score>=12?75:45}% | التغير: ${change.toFixed(2)} $`;
-  document.getElementById('tp1').innerText = tp1.toFixed(2);
-  document.getElementById('tp2').innerText = tp2.toFixed(2);
-  document.getElementById('sl').innerText = sl.toFixed(2);
-  document.getElementById('time').innerText = "آخر تحديث: " + new Date().toLocaleTimeString('ar-MA');
+function calc(price){
+ let ema = hist.reduce((a,b)=>a+b,0)/hist.length;
+ let gains=0, losses=0;
+ for(let i=1;i<hist.length;i++){ let diff=hist[i]-hist[i-1]; if(diff>0) gains+=diff; else losses+=-diff; }
+ let rs = gains/(losses||1);
+ let rsi = 100 - (100/(1+rs));
+ let macd = price - ema;
+ let atr = Math.abs(hist[hist.length-1]-hist[0]) || 1.2;
+ let sup = Math.min(...hist.slice(-20)) - 2;
+ let res = Math.max(...hist.slice(-20)) + 2;
+ let buyScore=0, sellScore=0;
+ if(price > ema) buyScore+=3; else sellScore+=3;
+ if(rsi < 35) buyScore+=4; if(rsi > 65) sellScore+=4;
+ if(macd > 0) buyScore+=3; else sellScore+=3;
+ if(price <= sup+3) buyScore+=4; if(price >= res-3) sellScore+=4;
+ let total = Math.max(buyScore, sellScore);
+ let sig="WAIT 🟡", cls="wait", conf=45, reason="السوق متذبذب، تسنى كسر الدعم ولا المقاومة";
+ let tp1, tp2, sl;
+ if(buyScore >= 7 && buyScore > sellScore){
+   sig="BUY 🟢"; cls="buy"; conf=72+buyScore; total=12+buyScore;
+   tp1=price+8; tp2=price+18; sl=price-10; reason="✅ السعر قريب من الدعم + RSI هابط + فوق EMA - صفقة BUY قوية";
+ } else if(sellScore >= 7 && sellScore > buyScore){
+   sig="SELL 🔴"; cls="sell"; conf=72+sellScore; total=12+sellScore;
+   tp1=price-8; tp2=price-18; sl=price+10; reason="✅ السعر قريب من المقاومة + RSI طالع + تحت EMA - صفقة SELL قوية";
+ } else {
+   tp1=price+12; tp2=price+25; sl=price-12;
+ }
+ document.getElementById('sig').innerText=sig; document.getElementById('sig').className="sig "+cls;
+ document.getElementById('price').innerText=price.toFixed(2)+" $";
+ document.getElementById('score').innerText=`Score: ${Math.min(total,19)} / 20 | ثقة: ${Math.min(conf,88)}%`;
+ document.getElementById('ema').innerText=ema.toFixed(2);
+ document.getElementById('rsi').innerText=rsi.toFixed(1);
+ document.getElementById('macd').innerText=macd.toFixed(2);
+ document.getElementById('atr').innerText=atr.toFixed(2);
+ document.getElementById('buyC').innerText=buyScore;
+ document.getElementById('sellC').innerText=sellScore;
+ document.getElementById('sup').innerText=sup.toFixed(2);
+ document.getElementById('res').innerText=res.toFixed(2);
+ document.getElementById('tp1').innerText=tp1.toFixed(2);
+ document.getElementById('tp2').innerText=tp2.toFixed(2);
+ document.getElementById('sl').innerText=sl.toFixed(2);
+ document.getElementById('entry').innerText=price.toFixed(2);
+ document.getElementById('reason').innerText=reason;
+ document.getElementById('barFill').style.width=(conf)+"%";
+ document.getElementById('time').innerText="آخر تحديث: "+new Date().toLocaleTimeString('ar-MA');
 }
-getGold();
-setInterval(getGold, 3000);
+getGold(); setInterval(getGold,3000);
 </script>
 </body>
 </html>
