@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SIMO GOLD AI V6 - FIXED</title>
+<title>SIMO GOLD AI V7 - LIVE</title>
 <style>
 body{background:#0a0a0a;color:#fff;font-family:Arial;text-align:center;padding:15px}
 .box{border:2px solid gold;border-radius:20px;padding:20px;background:#1a1a00}
-.price{font-size:48px;font-weight:bold;color:#fff;margin:10px}
-.signal{font-size:50px;font-weight:bold;margin:15px}
+.price{font-size:44px;font-weight:bold;margin:10px}
+.signal{font-size:42px;font-weight:bold;margin:15px}
 .buy{color:#00ff88}.sell{color:#ff4444}.wait{color:#ffcc00}
 .card{display:flex;justify-content:space-around;margin-top:15px}
 .card div{background:#222;padding:10px;border-radius:12px;width:30%}
@@ -18,11 +18,11 @@ button{background:gold;border:none;padding:12px 25px;border-radius:10px;font-wei
 </head>
 <body>
 <div class="box">
-<h2>🔥 SIMO GOLD AI V6 - LIVE FIXED</h2>
-<p>XAUUSD • LIVE • H1 • FundingPips 25K</p>
+<h2>🔥 SIMO GOLD AI V7 - LIVE</h2>
+<p>XAUUSD • PAXG = GOLD • H1 • FundingPips 25K</p>
 <div id="sig" class="signal wait">... جاري التحميل</div>
 <div id="price" class="price">---- $</div>
-<div id="info">Score: -- / 20 | ثقة: --%</div>
+<div id="info">Score: -- / 20</div>
 <div class="card">
 <div>TP1<br><span id="tp1" class="tp">----</span></div>
 <div>TP2<br><span id="tp2" class="tp">----</span></div>
@@ -34,51 +34,54 @@ button{background:gold;border:none;padding:12px 25px;border-radius:10px;font-wei
 </div>
 
 <script>
-let lastPrices = [];
+let prices = [];
 async function getGold(){
   try{
-    // API حقيقي ديال الذهب
-    let res = await fetch('https://data-asg.goldprice.org/dbXRates/USD');
+    // Binance PAXG = ذهب حقيقي 1:1 و خدام فالتيليفون
+    let res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
     let data = await res.json();
-    let price = data.items[0].currencies.USD; // ثمن الذهب الحقيقي
-    // ولا إلا ما خدمش، جرب هاد البديل
-    if(!price) throw "error";
+    let price = parseFloat(data.price);
     update(price);
   }catch(e){
-    // بديل ثاني إلا الأول ما خدمش
+    // بديل 2 إلا Binance ما خدمش
     try{
-      let r2 = await fetch('https://api.metals.live/v1/spot?metal=gold&currency=USD');
+      let r2 = await fetch('https://api.allorigins.win/raw?url=https://data-asg.goldprice.org/dbXRates/USD');
       let d2 = await r2.json();
-      update(d2[0].price);
+      let p2 = d2.items[0].currencies.USD;
+      update(p2);
     }catch(e2){
-      document.getElementById('sig').innerText = "مشكل فالإنترنت - جرب VPN";
+      document.getElementById('sig').innerText = "جرب شعل 4G و عاود";
     }
   }
 }
 function update(price){
-  lastPrices.push(price);
-  if(lastPrices.length>20) lastPrices.shift();
-  let first = lastPrices[0];
+  prices.push(price);
+  if(prices.length>30) prices.shift();
+  let first = prices[0];
   let change = price - first;
   let sigEl = document.getElementById('sig');
-  let score = 0;
-  let sig = "WAIT";
+  let score = 5;
+  let sig = "WAIT 🟡";
   let cls = "wait";
-  // منطق بسيط و ناضي
-  if(change > 3){ sig="BUY 🟢"; cls="buy"; score=14; }
-  else if(change < -3){ sig="SELL 🔴"; cls="sell"; score=14; }
-  else { sig="WAIT 🟡"; cls="wait"; score=2; }
+  let tp1 = price + 12, tp2 = price + 25, sl = price - 12;
+  if(change > 2){
+    sig="BUY 🟢"; cls="buy"; score=14;
+    tp1 = price+12; tp2 = price+25; sl = price-12;
+  } else if(change < -2){
+    sig="SELL 🔴"; cls="sell"; score=14;
+    tp1 = price-12; tp2 = price-25; sl = price+12;
+  }
   sigEl.innerText = sig;
   sigEl.className = "signal "+cls;
   document.getElementById('price').innerText = price.toFixed(2) + " $";
-  document.getElementById('info').innerText = `Score: ${score} / 20 | ثقة: ${score>=12?75:45}% | التغير: ${change.toFixed(2)}`;
-  document.getElementById('tp1').innerText = (price+12).toFixed(2);
-  document.getElementById('tp2').innerText = (price+25).toFixed(2);
-  document.getElementById('sl').innerText = (price-12).toFixed(2);
+  document.getElementById('info').innerText = `Score: ${score} / 20 | ثقة: ${score>=12?75:45}% | التغير: ${change.toFixed(2)} $`;
+  document.getElementById('tp1').innerText = tp1.toFixed(2);
+  document.getElementById('tp2').innerText = tp2.toFixed(2);
+  document.getElementById('sl').innerText = sl.toFixed(2);
   document.getElementById('time').innerText = "آخر تحديث: " + new Date().toLocaleTimeString('ar-MA');
 }
 getGold();
-setInterval(getGold, 5000); // كيتحدث كل 5 ثواني
+setInterval(getGold, 3000);
 </script>
 </body>
 </html>
